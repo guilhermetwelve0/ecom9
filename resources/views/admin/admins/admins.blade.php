@@ -18,7 +18,7 @@
                                             Admin ID
                                         </th>
                                         <th>
-                                            Nam
+                                            Name
                                         </th>
                                         <th>
                                             Type
