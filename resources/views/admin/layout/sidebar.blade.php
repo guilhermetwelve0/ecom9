@@ -57,7 +57,7 @@
                 <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="ui-catalogue">
-                <ul class="nav flex-column sub-menu " style="background: #fff !important; color:#4B49AC !important; ">
+                <ul class="nav flex-column sub-menu" style="background: #fff !important; color:#4B49AC !important;">
                     <li class="nav-item"> <a @if(Session::get('page')=="sections" ) style="background:#4B49AC !important; color:#fff !important;" @else style="background:#fff !important; color:#4B49AC !important;" @endif class="nav-link" href="{{ url('admin/sections') }}">Sections</a></li>
                     <li class="nav-item"> <a @if(Session::get('page')=="categories" ) style="background:#4B49AC !important; color:#fff !important;" @else style="background:#fff !important; color:#4B49AC !important;" @endif class="nav-link" href="{{ url('admin/categories') }}">Categories</a></li>
                     <li class="nav-item"> <a @if(Session::get('page')=="brands" ) style="background:#4B49AC !important; color:#fff !important;" @else style="background:#fff !important; color:#4B49AC !important;" @endif class="nav-link" href="{{ url('admin/brands') }}">Brands</a></li>
@@ -66,27 +66,27 @@
             </div>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#ui-users" aria-expanded="false" aria-controls="ui-users">
+            <a @if(Session::get('page')=="users" || Session::get('page')=="Subscribers" ) style="background:#4B49AC !important; color:#fff !important;" @endif class="nav-link" data-toggle="collapse" href="#ui-users" aria-expanded="false" aria-controls="ui-users">
                 <i class="icon-layout menu-icon"></i>
                 <span class="menu-title">Users Management</span>
                 <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="ui-users">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="{{ url('admin/users') }}">Users</a></li>
-                    <li class="nav-item"> <a class="nav-link" href="{{ url('admin/subscribers') }}">Subscribers</a></li>
+                <ul class="nav flex-column sub-menu style=" style="background: #fff !important; color:#4B49AC !important;">
+                    <li class="nav-item"> <a @if(Session::get('page')=="users" ) style="background:#4B49AC !important; color:#fff !important;" @else style="background:#fff !important; color:#4B49AC !important;" @endif class="nav-link" href="{{ url('admin/users') }}">Users</a></li>
+                    <li class="nav-item"> <a @if(Session::get('page')=="subscribers" ) style="background:#4B49AC !important; color:#fff !important;" @else style="background:#fff !important; color:#4B49AC !important;" @endif class="nav-link" href="{{ url('admin/subscribers') }}">Subscribers</a></li>
                 </ul>
             </div>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="#ui-banners" aria-expanded="false" aria-controls="ui-banners">
+            <a @if(Session::get('page')=="banners" ) style="background:#4B49AC !important; color:#fff !important;" @endif class="nav-link" data-toggle="collapse" href="#ui-banners" aria-expanded="false" aria-controls="ui-banners">
                 <i class="icon-layout menu-icon"></i>
                 <span class="menu-title">Banners Management</span>
                 <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="ui-banners">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="{{ url('admin/banners') }}">Slider Banners</a></li>
+                <ul class="nav flex-column sub-menu" style="background: #fff !important; color:#4B49AC !important;">
+                    <li class="nav-item"> <a @if(Session::get('page')=="banners" ) style="background:#4B49AC !important; color:#fff !important;" @else style="background:#fff !important; color:#4B49AC !important;" @endif class="nav-link" href="{{ url('admin/banners') }}">Slider Banners</a></li>
                 </ul>
             </div>
         </li>
