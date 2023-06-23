@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Banner;
 use Illuminate\Support\Facades\Session;
+use Image;
 
 class BannersController extends Controller
 {
@@ -67,9 +68,9 @@ class BannersController extends Controller
         }
         if ($request->isMethod('post')) {
             $data = $request->all();
-            echo "<pre>";
-            print_r($data);
-            die;
+            // echo "<pre>";
+            // print_r($data);
+            // die;
             $banner->link = $data['link'];
             $banner->title = $data['link'];
             $banner->alt = $data['link'];
@@ -83,7 +84,7 @@ class BannersController extends Controller
                     $extension = $image_tmp->getClientOriginalExtension();
                     //Generate New Image Name
                     $imageName = rand(111, 99999) . '.' . $extension;
-                    $imagePath = 'admin/images/banner_images/' . $imageName;
+                    $imagePath = 'front/images/banner_images/' . $imageName;
                     //Upload the Image
                     Image::make($image_tmp)->resize(1920,720)->save($imagePath);
                     $banner->image = $imageName;
@@ -92,6 +93,7 @@ class BannersController extends Controller
                 $banner->image = "";
             }
             $banner->save();
+            return redirect('admin/banners')->with('success_message',$message);
         }
         return view('admin.banners.add_edit_banner')->with(compact('title', 'banner'));
     }

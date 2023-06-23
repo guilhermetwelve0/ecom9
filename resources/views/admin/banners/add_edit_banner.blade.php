@@ -57,8 +57,7 @@
                                 <label for="admin_image">Banner Image</label>
                                 <input type="file" class="form-control" id="image" name="image" >
                                 @if(!empty($banner['image']))
-                                <a target="_blank" href="{{url('admin/images/banner_images/'. $banner['image']) }}">View Image</a>&nbsp;|&nbsp;
-                                <a href="javascript:void(0)" class="confirmDelete" module="banner-image" moduleid="{{$banner['id']}}">Delete Image</a>
+                                <a target="_blank" href="{{url('front/images/banner_images/'. $banner['image']) }}">View Image</a>
                                 @endif
                             </div>
                             <div class="form-group">
