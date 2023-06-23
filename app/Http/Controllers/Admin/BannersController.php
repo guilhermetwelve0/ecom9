@@ -71,9 +71,10 @@ class BannersController extends Controller
             // echo "<pre>";
             // print_r($data);
             // die;
+            $banner->type = $data['type'];
             $banner->link = $data['link'];
-            $banner->title = $data['link'];
-            $banner->alt = $data['link'];
+            $banner->title = $data['title'];
+            $banner->alt = $data['alt'];
             $banner->status = 1;
 
             //Upload Banner Image
