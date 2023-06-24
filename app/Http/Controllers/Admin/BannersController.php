@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Banner;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\File;
 use Image;
 
 class BannersController extends Controller
@@ -21,9 +22,6 @@ class BannersController extends Controller
     {
         if ($request->ajax()) {
             $data = $request->all();
-            // echo "<pre>";
-            // print_r($data);
-            // die;
             if ($data['status'] == "Active") {
                 $status = 0;
             } else {
@@ -43,8 +41,8 @@ class BannersController extends Controller
         $banner_image_path = 'front/images/banner_images/';
 
         //Delete Banner if exists in Folder
-        if (file_exists($banner_image_path . $bannerImage->image)) {
-            unlink($banner_image_path . $bannerImage->image);
+        if (File::exists($banner_image_path . $bannerImage->image)) {
+            File::delete($banner_image_path . $bannerImage->image);
         }
 
         //Delete Banner Image from banners table
@@ -52,6 +50,7 @@ class BannersController extends Controller
         $message = "Banner deleted successfully!";
         return redirect('admin/banners')->with('success_message', $message);
     }
+
     public function addEditBanner(Request $request, $id = null)
     {
         Session::put('page', 'banners');
@@ -68,14 +67,19 @@ class BannersController extends Controller
         }
         if ($request->isMethod('post')) {
             $data = $request->all();
-            // echo "<pre>";
-            // print_r($data);
-            // die;
             $banner->type = $data['type'];
             $banner->link = $data['link'];
             $banner->title = $data['title'];
             $banner->alt = $data['alt'];
             $banner->status = 1;
+
+            if($data['type']=="Slider"){
+                $width = "1920";
+                $height = "720";
+            }else if($data['type']=="Fix"){
+                $width = "1920";
+                $height = "450";
+            }
 
             //Upload Banner Image
             if ($request->hasFile('image')) {
@@ -87,15 +91,16 @@ class BannersController extends Controller
                     $imageName = rand(111, 99999) . '.' . $extension;
                     $imagePath = 'front/images/banner_images/' . $imageName;
                     //Upload the Image
-                    Image::make($image_tmp)->resize(1920,720)->save($imagePath);
+                    Image::make($image_tmp)->resize($width,$height)->save(public_path($imagePath));
                     $banner->image = $imageName;
                 }
-            } else {
-                $banner->image = "";
             }
+
             $banner->save();
-            return redirect('admin/banners')->with('success_message',$message);
+            return redirect('admin/banners')->with('success_message', $message);
         }
         return view('admin.banners.add_edit_banner')->with(compact('title', 'banner'));
     }
 }
+
+

@@ -30,6 +30,9 @@
                                             Image
                                         </th>
                                         <th>
+                                            Type
+                                        </th>
+                                        <th>
                                             Link
                                         </th>
                                         <th>
@@ -54,6 +57,9 @@
                                         </td>
                                         <td>
                                             <img style="width:180px;" src="{{asset('front/images/banner_images/'.$banner['image']) }}">
+                                        </td>
+                                        <td>
+                                            {{$banner['type'] }}
                                         </td>
                                         <td>
                                             {{$banner['link'] }}
