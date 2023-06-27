@@ -134,8 +134,12 @@
                                 <input type="text" class="form-control" id="meta_keywords" placeholder="Enter Meta Keywords" name="meta_keywords" @if(!empty($product['meta_keywords'])) value="{{$product['meta_keywords']}}" @else value="{{old('meta_keywords')}}" @endif>
                             </div>
                             <div class="form-group">
-                                <label for="is_featured">Featured Item</label>
+                                <label for="is_bestseller">Featured Item</label>
                                 <input type="checkbox" name="is_featured" id="is_featured" value="Yes" @if(!empty($product['is_featured']) && $product['is_featured']=="Yes" ) checked="" @endif>
+                            </div>
+                            <div class="form-group">
+                                <label for="is_bestseller">Best Seller Item</label>
+                                <input type="checkbox" name="is_bestseller" id="is_bestseller" value="Yes" @if(!empty($product['is_bestseller']) && $product['is_bestseller']=="Yes" ) checked="" @endif>
                             </div>
                             <button type="submit" class="btn btn-primary mr-2">Submit</button>
                             <button type="reset" class="btn btn-light">Cancel</button>

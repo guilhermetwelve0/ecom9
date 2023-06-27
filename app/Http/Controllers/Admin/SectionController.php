@@ -59,7 +59,7 @@ class SectionController extends Controller
             // die;
 
             $rules = [
-                'section_name' => 'required|regex:/^[\pL\s\-]+$/u',
+                'section_name' => 'required|regex:/^[\pL\s\-\d]+$/u',
             ];
             $customMessages = [
                 'section_name.required' => 'Section Name is required',

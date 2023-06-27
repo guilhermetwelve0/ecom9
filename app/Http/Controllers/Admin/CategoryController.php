@@ -65,7 +65,7 @@ class CategoryController extends Controller
             // die;
 
             $rules = [
-                'category_name' => 'required|regex:/^[\pL\s\-]+$/u',
+                'category_name' => 'required|regex:/^[\pL\s\-\d]+$/u',
                 'section_id' => 'required',
                 'url' => 'required',
             ];

@@ -60,7 +60,7 @@ class BrandController extends Controller
             // die;
 
             $rules = [
-                'brand_name' => 'required|regex:/^[\pL\s\-]+$/u',
+                'brand_name' => 'required|regex:/^[\pL\s\-\d]+$/u',
             ];
             $customMessages = [
                 'brand_name.required' => 'Brand Name is required',

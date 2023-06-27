@@ -64,7 +64,7 @@ class AdminController extends Controller
             // print_r($data);
             // die();
             $rules = [
-                'admin_name' => 'required|regex:/^[\pL\s\-]+$/u',
+                'admin_name' => 'required|regex:/^[\pL\s\-\d]+$/u',
                 'admin_mobile' => 'required|numeric',
             ];
             $customMessages = [
@@ -105,7 +105,7 @@ class AdminController extends Controller
             if ($request->isMethod('post')) {
                 $data = $request->all();
                 $rules = [
-                    'vendor_name' => 'required|regex:/^[\pL\s\-]+$/u',
+                    'vendor_name' => 'required|regex:/^[\pL\s\-\d]+$/u',
                     'vendor_city' => 'required|regex:/^[\pL\s\-]+$/u',
                     'vendor_mobile' => 'required|numeric',
                 ];
@@ -148,7 +148,7 @@ class AdminController extends Controller
             if ($request->isMethod('post')) {
                 $data = $request->all();
                 $rules = [
-                    'shop_name' => 'required|regex:/^[\pL\s\-]+$/u',
+                    'shop_name' => 'required|regex:/^[\pL\s\-\d]+$/u',
                     'shop_city' => 'required|regex:/^[\pL\s\-]+$/u',
                     'shop_mobile' => 'required|numeric',
                     'address_proof' => 'required',
