@@ -16,14 +16,12 @@ class ProductsController extends Controller
         if($categoryCount>0){
             //Get Category Details
             $categoryDetails = Category::categoryDetails($url);
+            $categoryProducts = Product::with('brand')->whereIn('category_id', $categoryDetails['catIds'])->where('status', 1)->get()->toArray();
             // dd($categoryDetails);
-            $categoryProducts = Product::whereIn('category_id',$categoryDetails['catIds'])->where('status',1)->get()->toArray();
-            // dd($categoryProducts);
-            //  echo "Category exists"; die;
+            // echo "Category exists"; die;
             return view('front.products.listing')->with(compact('categoryDetails','categoryProducts'));
         }else{
              abort(404);
         }
-
     }
 }

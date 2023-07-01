@@ -104,6 +104,9 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
         Route::post('update-banner-status', 'BannersController@updateBannerStatus');
         Route::get('delete-banner/{id}', 'BannersController@deleteBanner');
         Route::match(['get','post'],'add-edit-banner/{id?}', 'BannersController@addEditBanner');
+        Route::get('add-edit-product/{id}', [App\Http\Controllers\Admin\ProductsController::class, 'addEditProduct'])->name('admin.add.edit.product');
+        Route::get('/tshirts', [ProductsController::class, 'listing']);
+ 
     });
 });
 Route::namespace('App\Http\Controllers\Front')->group(function(){

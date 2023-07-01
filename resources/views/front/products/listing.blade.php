@@ -28,14 +28,9 @@ use App\Models\Product; ?>
         <div class="shop-intro">
             <ul class="bread-crumb">
                 <li class="has-separator">
-                    <a href="index.html">Home</a>
+                    <a href="/">Home</a>
                 </li>
-                <li class="has-separator">
-                    <a href="shop-v1-root-category.html">Men Clothing </a>
-                </li>
-                <li class="is-marked">
-                    <a href="listing.html">T-Shirts</a>
-                </li>
+                <?php echo $categoryDetails['breadcrumbs']; ?>
             </ul>
         </div>
         <!-- Shop-Intro /- -->
@@ -110,8 +105,11 @@ use App\Models\Product; ?>
                                         <li class="has-separator">
                                             <a href="shop-v1-root-category.html">{{$product['product_code']}}</a>
                                         </li>
-                                        <li>
+                                        <li class="has-separator">
                                             <a href="listing.html">{{$product['product_color']}}</a>
+                                        </li>
+                                        <li>
+                                            <a href="listing.html">{{$product['brand']['name']}}</a>
                                         </li>
                                     </ul>
                                     <h6 class="item-title">
@@ -153,8 +151,10 @@ use App\Models\Product; ?>
                     @endforeach
                 </div>
                 <!-- Row-of-Product-Container /- -->
+                <div>{{$categoryDetails['categoryDetails']['description']}}</div>
             </div>
             <!-- Shop-Right-Wrapper /- -->
+
             <!-- Shop-Pagination -->
             <div class="pagination-area">
                 <div class="pagination-number">
