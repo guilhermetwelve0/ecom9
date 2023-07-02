@@ -39,8 +39,8 @@ class Category extends Model
            </li>';
         } else {
             //Show Main and Sub Category in Breadcrumb
-            $parentCategory =  Category::select('category_name', 'url')->where('id', $categoryDetails['parent_id'])->toArray();
-            '<li class="has-separator">
+            $parentCategory =  Category::select('category_name', 'url')->where('id', $categoryDetails['parent_id'])->first()->toArray();
+            $breadcrumbs = '<li class="has-separator">
            <a href="' . url($parentCategory['url']) . '">' . $parentCategory['category_name'] .
             '</a>
            </li><li class="is-marked">

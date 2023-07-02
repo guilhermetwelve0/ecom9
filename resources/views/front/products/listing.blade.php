@@ -51,27 +51,41 @@ use App\Models\Product; ?>
                         </a>
                     </div>
                     <!-- Toolbar Sorter 1  -->
+                    <form name="sortProducts" id="sortProducts">
                     <div class="toolbar-sorter">
                         <div class="select-box-wrapper">
                             <label class="sr-only" for="sort-by">Sort By</label>
-                            <select class="select-box" id="sort-by">
-                                <option selected="selected" value="">Sort By: Best Selling</option>
-                                <option value="">Sort By: Latest</option>
-                                <option value="">Sort By: Lowest Price</option>
-                                <option value="">Sort By: Highest Price</option>
-                                <option value="">Sort By: Best Rating</option>
+                            <select name="sort" id="sort" class="select-box">
+                                <!-- <option selected="selected" value="">Sort By: Best Selling</option> -->
+                                <option selected="" value="">Select</option>
+                                <option value="product_latest">Sort By: Latest</option>
+                                <option value="price_lowest">Sort By: Lowest Price</option>
+                                <option value="price_highest">Sort By: Highest Price</option>
+                                <option value="name_z_a">Sort By: Name A - Z</option>
+                                <option value="name_a_z ">Sort By: Name Z - A</option>
+                                <!-- <option value="">Sort By: Best Rating</option> -->
                             </select>
                         </div>
                     </div>
+                    </form>
                     <!-- //end Toolbar Sorter 1  -->
                     <!-- Toolbar Sorter 2  -->
-                    <div class="toolbar-sorter-2">
+                    <!-- <div class="toolbar-sorter-2">
                         <div class="select-box-wrapper">
                             <label class="sr-only" for="show-records">Show Records Per Page</label>
                             <select class="select-box" id="show-records">
                                 <option selected="selected" value="">Show: 8</option>
                                 <option value="">Show: 16</option>
                                 <option value="">Show: 28</option>
+                            </select>
+                        </div>
+                    </div> -->
+                    <div class="toolbar-sorter-2">
+                        <div class="select-box-wrapper">
+                            <label class="sr-only" for="show-records">Show Records Per Page</label>
+                            <select class="select-box" id="show-records">
+                                <option selected="selected" value="">Showing: {{count($categoryProducts)}}</option>
+                                <option value="">Showing: All</option>
                             </select>
                         </div>
                     </div>
@@ -143,20 +157,25 @@ use App\Models\Product; ?>
                                 </div>
                                 @endif
                             </div>
+                            <?php $isProductNew = Product::isProductNew($product['id']); ?>
+                            @if($isProductNew=="Yes")
                             <div class="tag new">
                                 <span>NEW</span>
                             </div>
+                            @endif
                         </div>
                     </div>
                     @endforeach
                 </div>
                 <!-- Row-of-Product-Container /- -->
+                <div>{{$categoryProducts->links()}}</div>
+                <div>&nbsp;</div>
                 <div>{{$categoryDetails['categoryDetails']['description']}}</div>
             </div>
             <!-- Shop-Right-Wrapper /- -->
 
             <!-- Shop-Pagination -->
-            <div class="pagination-area">
+            <?php /* <div class="pagination-area">
                 <div class="pagination-number">
                     <ul>
                         <li style="display: none">
@@ -186,7 +205,7 @@ use App\Models\Product; ?>
                         </li>
                     </ul>
                 </div>
-            </div>
+            </div> */ ?>
             <!-- Shop-Pagination /- -->
         </div>
     </div>

@@ -113,6 +113,8 @@
     <script type="text/javascript" src="{{ url('front/js/owl.carousel.min.js') }}"></script>
     <!-- Main -->
     <script type="text/javascript" src="{{ url('front/js/app.js') }}"></script>
+    <!-- Custom -->
+    <script type="text/javascript" src="{{ url('front/js/custom.js') }}"></script>
 </body>
 
 </html>

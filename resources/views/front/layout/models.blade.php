@@ -20,6 +20,7 @@
             </div>
         </div>
         <!-- Responsive-Search /- -->
+        <?php /*
         <!-- Newsletter-Modal -->
         <div id="newsletter-modal" class="modal fade">
             <div class="modal-dialog modal-dialog-centered">
@@ -58,6 +59,7 @@
             </div>
         </div>
         <!-- Newsletter-Modal /- -->
+        */ ?>
         <!-- Quick-view-Modal -->
         <div id="quick-view" class="modal fade">
             <div class="modal-dialog modal-dialog-centered">
