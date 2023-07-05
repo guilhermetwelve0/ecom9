@@ -106,16 +106,16 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
         Route::match(['get','post'],'add-edit-banner/{id?}', 'BannersController@addEditBanner');
         Route::get('add-edit-product/{id}', [App\Http\Controllers\Admin\ProductsController::class, 'addEditProduct'])->name('admin.add.edit.product');
         Route::get('/tshirts', [ProductsController::class, 'listing']);
- 
+
     });
 });
 Route::namespace('App\Http\Controllers\Front')->group(function(){
- Route::get('/','IndexController@index');
+ Route::match('/','IndexController@index');
 
    // Listing/Categories Routes
    $catUrls = Category::select('url')->where('status',1)->get()->pluck('url')->toArray();
 //    dd($catUrls);die;
    foreach ($catUrls as $key => $url) {
-       Route::get('/'.$url, 'ProductsController@listing');
+       Route::match(['get','post'],'/'.$url, 'ProductsController@listing');
    }
 });
