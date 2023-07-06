@@ -5,6 +5,7 @@ $(document).ready(function () {
     $("#brands").DataTable();
     $("#products").DataTable();
     $("#banners").DataTable();
+    $("#filters").DataTable();
 
     // Adicionar delay de 500ms com debounce
     $(".nav-item").removeClass("active");
@@ -69,7 +70,7 @@ $(document).ready(function () {
         var banner_id = $(this).attr("banner_id");
         $.ajax({
             headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
             type: "post",
             url: "/admin/update-banner-status",
@@ -208,6 +209,64 @@ $(document).ready(function () {
         });
     });
 
+    //Update Filter Status
+    $(document).on("click", ".updateFilterStatus", function () {
+        var status = $(this).children("i").attr("status");
+        var filter_id = $(this).attr("filter_id");
+        $.ajax({
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            type: "post",
+            url: "/admin/update-filter-status",
+            data: { status: status, filter_id: filter_id },
+            success: function (resp) {
+                // alert(resp);
+                if (resp["status"] == 0) {
+                    $("#filter-" + filter_id).html(
+                        "<i style='font-size:25px;' class='mdi mdi-bookmark-outline' status='Inactive'></i>"
+                    );
+                } else if (resp["status"] == 1) {
+                    $("#filter-" + filter_id).html(
+                        "<i style='font-size:25px;' class='mdi mdi-bookmark-check' status='Active'></i>"
+                    );
+                }
+            },
+            error: function () {
+                alert("Error");
+            },
+        });
+    });
+
+    //Update Filter Status
+    $(document).on("click", ".updateFilterValueStatus", function () {
+        var status = $(this).children("i").attr("status");
+        var filter_id = $(this).attr("filter_id");
+        $.ajax({
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            type: "post",
+            url: "/admin/update-filter-value-status",
+            data: { status: status, filter_id: filter_id },
+            success: function (resp) {
+                // alert(resp);
+                if (resp["status"] == 0) {
+                    $("#filter-" + filter_id).html(
+                        "<i style='font-size:25px;' class='mdi mdi-bookmark-outline' status='Inactive'></i>"
+                    );
+                } else if (resp["status"] == 1) {
+                    $("#filter-" + filter_id).html(
+                        "<i style='font-size:25px;' class='mdi mdi-bookmark-check' status='Active'></i>"
+                    );
+                }
+            },
+            error: function () {
+                alert("Error");
+            },
+        });
+    });
+
     //Update Attribute Status
     $(document).on("click", ".updateAttributeStatus", function () {
         var status = $(this).children("i").attr("status");
@@ -276,7 +335,7 @@ $(document).ready(function () {
     //     }
     // })
     //Confirm Deletion (SweetAlert Library)
-    $(document).on("click",".confirmDelete",function(){
+    $(document).on("click", ".confirmDelete", function () {
         var module = $(this).attr("module");
         var moduleid = $(this).attr("moduleid");
         Swal.fire({

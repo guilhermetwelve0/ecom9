@@ -90,11 +90,17 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
         Route::match(['get','post'],'add-edit-product/{id?}','ProductsController@addEditProduct');
         Route::get('delete-product-image/{id}','ProductsController@deleteProductImage');
         Route::get('delete-product-video/{id}','ProductsController@deleteProductVideo');
+
         //Attributes
         Route::match(['get','post'],'add-edit-attributes/{id}','ProductsController@addAttributes');
         Route::post('update-attribute-status', 'ProductsController@updateAttributeStatus');
         Route::get('delete-attribute/{id}', 'ProductsController@deleteAttribute');
         Route::match(['get', 'post'],'edit-attributes/{id}', 'ProductsController@editAttributes');
+        //Filters
+        Route::get('filters', 'FilterController@filters');
+        Route::get('filters-values', 'FilterController@filtersValues');
+        Route::post('update-filter-status', 'FilterController@updateFilterStatus');
+        Route::post('update-filter-value-status', 'FilterController@updateFilterValueStatus');
         //Images
         Route::match(['get', 'post'], 'add-images/{id}', 'ProductsController@addImages');
         Route::post('update-image-status', 'ProductsController@updateImageStatus');
