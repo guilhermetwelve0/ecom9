@@ -101,6 +101,8 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
         Route::get('filters-values', 'FilterController@filtersValues');
         Route::post('update-filter-status', 'FilterController@updateFilterStatus');
         Route::post('update-filter-value-status', 'FilterController@updateFilterValueStatus');
+        Route::match(['get', 'post'],'add-edit-filter/{id?}','FilterController@addEditFilter');
+        Route::match(['get', 'post'],'add-edit-filter-value/{id?}','FilterController@addEditFilterValue');
         //Images
         Route::match(['get', 'post'], 'add-images/{id}', 'ProductsController@addImages');
         Route::post('update-image-status', 'ProductsController@updateImageStatus');
@@ -116,7 +118,7 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
     });
 });
 Route::namespace('App\Http\Controllers\Front')->group(function(){
- Route::match('/','IndexController@index');
+    Route::get('/','IndexController@index');
 
    // Listing/Categories Routes
    $catUrls = Category::select('url')->where('status',1)->get()->pluck('url')->toArray();
