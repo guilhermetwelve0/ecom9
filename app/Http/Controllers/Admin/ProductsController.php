@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\Brand;
 use App\Models\ProductsAttribute;
 use App\Models\ProductsImage;
+use App\Models\ProductsFilter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Image;
@@ -134,6 +135,17 @@ class ProductsController extends Controller
             $product->category_id = $data['category_id'];
             $product->brand_id = $data['brand_id'];
 
+            $productFilters = ProductsFilter::productFilters();
+            foreach ($productFilters as $filter) {
+                // echo $data[$filter['filter_column']]; die;
+                $filterAvailable = ProductsFilter::filterAvailable($filter['id'], $data['category_id']);
+                if ($filterAvailable == "Yes") {
+                    if (isset($filter['filter_column']) && $data[$filter['filter_column']]) {
+                        $product->{$filter['filter_column']} = $data[$filter['filter_column']];
+                    }
+                }
+            }
+
             $adminType = Auth::guard('admin')->user()->type;
             $vendor_id = Auth::guard('admin')->user()->vendor_id;
             $admin_id = Auth::guard('admin')->user()->id;
@@ -146,11 +158,11 @@ class ProductsController extends Controller
                 $product->vendor_id = 0;
             }
 
-            if(empty($data['product_discount'])){
+            if (empty($data['product_discount'])) {
                 $data['product_discount'] = 0;
             }
 
-            if(empty($data['product_weight'])){
+            if (empty($data['product_weight'])) {
                 $data['product_weight'] = 0;
             }
 
@@ -235,7 +247,7 @@ class ProductsController extends Controller
     public function addAttributes(Request $request, $id)
     {
         Session::put('page', 'products');
-        $product = Product::select('id','product_name','product_code','product_color','product_price','product_image')->with('attributes')->find($id);
+        $product = Product::select('id', 'product_name', 'product_code', 'product_color', 'product_price', 'product_image')->with('attributes')->find($id);
         // $product = json_decode(json_encode($product), true);
         // dd($product);
 
@@ -245,15 +257,15 @@ class ProductsController extends Controller
             foreach ($data['sku'] as $key => $value) {
                 if (!empty($value)) {
                     //SKU duplicate check
-                    $skuCount = ProductsAttribute::where('sku',$value)->count();
-                    if ($skuCount>0) {
+                    $skuCount = ProductsAttribute::where('sku', $value)->count();
+                    if ($skuCount > 0) {
                         return redirect()->back()->with('error_message', 'SKU already exists!Please add another SKU!');
                     }
 
                     //Size duplicate check
                     $sizeCount = ProductsAttribute::where(['product_id' => $id, 'size' => $data['size'][$key]])->count();
 
-                    if ($sizeCount>0) {
+                    if ($sizeCount > 0) {
                         return redirect()->back()->with('error_message', 'Size already exists! Please add another Size!');
                     }
                     if (!empty($value)) {
@@ -307,15 +319,16 @@ class ProductsController extends Controller
             }
         }
     }
-    public function addImages($id, Request $request){
+    public function addImages($id, Request $request)
+    {
         Session::put('page', 'products');
         $product = Product::select('id', 'product_name', 'product_code', 'product_color', 'product_price', 'product_image')->with('images')->find($id);
-        if($request->isMethod('post')){
+        if ($request->isMethod('post')) {
             $data = $request->all();
-            if($request->hasFile('images')){
+            if ($request->hasFile('images')) {
                 $images = $request->file('images');
                 // echo "<pre>"; print_r($images); die;
-                foreach($images as $key => $image){
+                foreach ($images as $key => $image) {
                     //Generate Temp Image
                     $image_tmp = Image::make($image);
                     //Get Image Name
@@ -323,7 +336,7 @@ class ProductsController extends Controller
                     //Get Image Extension
                     $extension = $image->getClientOriginalExtension();
                     //Generate New Image Name
-                    $imageName = $image_name.rand(111, 99999) . '.' . $extension;
+                    $imageName = $image_name . rand(111, 99999) . '.' . $extension;
                     $largeImagePath = 'front/images/product_images/large/' . $imageName;
                     $mediumImagePath = 'front/images/product_images/medium/' . $imageName;
                     $smallImagePath = 'front/images/product_images/small/' . $imageName;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Support\Facades\View;
 use App\Http\Controllers\Controller;
 use App\Models\ProductsFilter;
 use App\Models\ProductsFiltersValue;
@@ -127,6 +128,17 @@ class FilterController extends Controller
         //Get Filters
         $filters = ProductsFilter::where('status', 1)->get()->toArray();
 
-        return view('admin.filters.add_edit_filter_value')->with(compact('title',  'filter','filters'));
+        return view('admin.filters.add_edit_filter_value')->with(compact('title',  'filter', 'filters'));
+    }
+    public function categoryFilters(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = $request->all();
+            // echo "<pre>"; print_r($data); die;
+            $category_id = $data['category_id'];
+            return response()->json([
+                'view' => (string)View::make('admin.filters.category_filters')->with(compact('category_id'))
+            ]);
+        }
     }
 }

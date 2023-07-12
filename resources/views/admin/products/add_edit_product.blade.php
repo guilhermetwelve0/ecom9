@@ -68,6 +68,9 @@
                                     @endforeach
                                 </select>
                             </div>
+                            <div class="loadFilters">
+                                @include('admin.filters.category_filters')
+                            </div>
                             <div class="form-group">
                                 <label for="brand_id">Select Brand</label>
                                 <select name="brand_id" id="brand_id" class="form-control text-dark">

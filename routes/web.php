@@ -103,6 +103,9 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
         Route::post('update-filter-value-status', 'FilterController@updateFilterValueStatus');
         Route::match(['get', 'post'],'add-edit-filter/{id?}','FilterController@addEditFilter');
         Route::match(['get', 'post'],'add-edit-filter-value/{id?}','FilterController@addEditFilterValue');
+        Route::post('category-filters','FilterController@categoryFilters');
+        Route::get('category-filters', 'FilterController@categoryFilters');
+
         //Images
         Route::match(['get', 'post'], 'add-images/{id}', 'ProductsController@addImages');
         Route::post('update-image-status', 'ProductsController@updateImageStatus');
