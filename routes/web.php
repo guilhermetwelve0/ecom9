@@ -130,3 +130,9 @@ Route::namespace('App\Http\Controllers\Front')->group(function(){
        Route::match(['get','post'],'/'.$url, 'ProductsController@listing');
    }
 });
+
+Route::get('/swagger', function () {
+    return view('vendor.swagger.index');
+});
+
+
