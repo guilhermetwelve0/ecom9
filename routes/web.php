@@ -132,7 +132,7 @@ Route::namespace('App\Http\Controllers\Front')->group(function(){
 });
 
 Route::get('/swagger', function () {
-    return view('vendor.swagger.index');
+    return view('vendor.darkaonline.l5-swagger.index');
 });
 
 
