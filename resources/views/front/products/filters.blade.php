@@ -84,26 +84,17 @@ $productFilters = ProductsFilter::productFilters();
     </div>
     <!-- Filter-Color /- -->
     <!-- Filter-Brand -->
+    <?php $getBrands = ProductsFilter::getBrands($url); ?>
     <div class="facet-filter-associates">
         <h3 class="title-name">Brand</h3>
         <form class="facet-form" action="#" method="post">
             <div class="associate-wrapper">
-                <input type="checkbox" class="check-box" id="cbs-21">
-                <label class="label-text" for="cbs-21">Calvin Klein
-                    <span class="total-fetch-items">(0)</span>
+                @foreach($getBrands as $key => $brand)
+                <input type="checkbox" class="check-box brand" id="cbs-21">
+                <label class="label-text" for="cbs-21">{{$brand}}
+                    <!-- <span class="total-fetch-items">(0)</span> -->
                 </label>
-                <input type="checkbox" class="check-box" id="cbs-22">
-                <label class="label-text" for="cbs-22">Diesel
-                    <span class="total-fetch-items">(0)</span>
-                </label>
-                <input type="checkbox" class="check-box" id="cbs-23">
-                <label class="label-text" for="cbs-23">Polo
-                    <span class="total-fetch-items">(0)</span>
-                </label>
-                <input type="checkbox" class="check-box" id="cbs-24">
-                <label class="label-text" for="cbs-24">Tommy Hilfiger
-                    <span class="total-fetch-items">(0)</span>
-                </label>
+                @endforeach
             </div>
         </form>
     </div>
@@ -115,8 +106,8 @@ $productFilters = ProductsFilter::productFilters();
             <div class="associate-wrapper">
                 <?php $prices = array('0-1000', '1000-2000', '2000-5000', '5000-10000', '10000-100000'); ?>
                 @foreach($prices as $key => $price)
-                <input type="checkbox" class="check-box price" id="price{{$key}}" name="price[]" value="{{$price}}">
-                <label class="label-text" for="price{{$key}}">Rs. {{$price}}
+                <input type="checkbox" class="check-box price" id="price{{ $key }}" name="price[]" value="{{ $price }}">
+                <label class="label-text" for="price{{ $key }}">Rs. {{$price}}
                     <!-- <span class="total-fetch-items">(0)</span> -->
                 </label>
                 @endforeach
