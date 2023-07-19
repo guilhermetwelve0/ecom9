@@ -70,6 +70,6 @@ class ProductsFilter extends Model
         // echo "<pre>";
         // print_r($brandDetails);
         // die;
-        return $getProductBrands;
+        return $brandDetails;
     }
 }

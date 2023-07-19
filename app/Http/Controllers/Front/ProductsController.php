@@ -74,6 +74,12 @@ class ProductsController extends Controller
                 $categoryProducts->whereIn('products.id',$productIds);
                 }
 
+                //checking for Brand
+                if (isset($data['brand']) && !empty($data['brand'])) {
+                    $productIds = Product::select('id')->whereIn('brand_id', $data['brand'])->pluck('id')->toArray();
+                    $categoryProducts->whereIn('products.id', $productIds);
+                }
+
                 $categoryProducts = $categoryProducts->paginate(10);
                 // dd($categoryDetails);
                 // echo "Category exists"; die;

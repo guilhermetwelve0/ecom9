@@ -90,8 +90,8 @@ $productFilters = ProductsFilter::productFilters();
         <form class="facet-form" action="#" method="post">
             <div class="associate-wrapper">
                 @foreach($getBrands as $key => $brand)
-                <input type="checkbox" class="check-box brand" name="brand[]" id="brand{{$key}}" value="{{$brand}}">
-                <label class="label-text" for="brand{{$key}}">{{$brand}}
+                <input type="checkbox" class="check-box brand" name="brand[]" id="brand{{$key}}" value="{{$brand['id']}}">
+                <label class="label-text" for="brand{{$key}}">{{$brand['name']}}
                     <!-- <span class="total-fetch-items">(0)</span> -->
                 </label>
                 @endforeach
