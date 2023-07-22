@@ -216,9 +216,9 @@ $productFilters = ProductsFilter::productFilters();
                 success: function(data) {
                     $(".filter_products").html(data);
                 },
-                error: function() {
-                    alert("Error");
-                }
+                // error: function() {
+                //     alert("Error");
+                // }
             });
             });
 
