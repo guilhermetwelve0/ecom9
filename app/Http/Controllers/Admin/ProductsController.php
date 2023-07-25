@@ -33,6 +33,9 @@ class ProductsController extends Controller
         }, 'category' => function ($query) {
             $query->select('id', 'category_name');
         }]);
+        if($adminType=="vendor"){
+            $products = $products->where('vendor_id',$vendor_id);
+        }
         $products = $products->get()->toArray();
         //  dd($products);
         return view('admin.products.products')->with(compact('products'));

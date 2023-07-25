@@ -86,7 +86,7 @@ class VendorController extends Controller
             ];
 
             Mail::send('emails.vendor_confirmation', $messageData, function ($message) use ($email) {
-                $message->to($email)->subject('Confirm your VendorAccount');
+                $message->to($email)->subject('Confirm your Vendor Account');
             });
             DB::commit();
 

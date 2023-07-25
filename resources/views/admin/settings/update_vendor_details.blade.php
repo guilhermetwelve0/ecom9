@@ -156,57 +156,57 @@
                             </div>
                             <div class="form-group">
                                 <label for="shop_name">Shop Name</label>
-                                <input type="text" class="form-control" id="shop_name" placeholder="Enter Shop Name" name="shop_name" value="{{$vendorDetails['shop_name']}}">
+                                <input type="text" class="form-control" id="shop_name" placeholder="Enter Shop Name" name="shop_name" @if(isset($vendorDetails['shop_name'])) value="{{$vendorDetails['shop_name']}}" @endif>
                             </div>
                             <div class="form-group">
                                 <label for="shop_address">Shop Address</label>
-                                <input type="text" class="form-control" id="shop_address" placeholder="Enter Shop Address" name="shop_address" value="{{$vendorDetails['shop_address']}}">
+                                <input type="text" class="form-control" id="shop_address" placeholder="Enter Shop Address" name="shop_address" @if(isset($vendorDetails['shop_address'])) value="{{$vendorDetails['shop_address']}}" @endif>
                             </div>
                             <div class="form-group">
                                 <label for="shop_city">Shop City</label>
-                                <input type="text" class="form-control" id="shop_city" placeholder="Enter Shop City" name="shop_city" value="{{$vendorDetails['shop_city']}}">
+                                <input type="text" class="form-control" id="shop_city" placeholder="Enter Shop City" name="shop_city" @if(isset($vendorDetails['shop_city'])) value="{{$vendorDetails['shop_city']}}" @endif>
                             </div>
                             <div class="form-group">
                                 <label for="shop_state">Shop State</label>
-                                <input type="text" class="form-control" id="shop_state" placeholder="Enter Shop State" name="shop_state" value="{{$vendorDetails['shop_state']}}">
+                                <input type="text" class="form-control" id="shop_state" placeholder="Enter Shop State" name="shop_state" @if(isset($vendorDetails['shop_state'])) value="{{$vendorDetails['shop_state']}}" @endif>
                             </div>
                             <div class="form-group">
                                 <label for="shop_country">Shop Country</label>
                                 <select class="form-control" id="shop_country" name="shop_country" style="color: #495057;">
                                     <option value="">Select Country</option>
                                     @foreach($countries as $country)
-                                    <option value="{{$country['country_name'] }}" @if($country['country_name']==$vendorDetails['shop_country']) selected @endif> {{$country['country_name']}}</option>
+                                    <option value="{{$country['country_name'] }}" @if(isset($vendorDetails['shop_country']) && $country['country_name']==$vendorDetails['shop_country']) selected @endif> {{$country['country_name']}}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="shop_pincode">Shop Pincode</label>
-                                <input type="text" class="form-control" id="shop_pincode" placeholder="Enter Shop Pincode" name="shop_pincode" value="{{$vendorDetails['shop_pincode']}}">
+                                <input type="text" class="form-control" id="shop_pincode" placeholder="Enter Shop Pincode" name="shop_pincode" @if(isset($vendorDetails['shop_pincode'])) value="{{$vendorDetails['shop_pincode']}}" @endif>
                             </div>
                             <div class="form-group">
                                 <label for="shop_mobile">Shop Mobile</label>
-                                <input type="text" class="form-control" id="shop_mobile" placeholder="Enter 11 Digit Mobile Number" name="shop_mobile" value="{{$vendorDetails['shop_mobile']}}" required="" maxlength="15" minlength="11">
+                                <input type="text" class="form-control" id="shop_mobile" placeholder="Enter 11 Digit Mobile Number" name="shop_mobile" @if(isset($vendorDetails['shop_mobile'])) value="{{$vendorDetails['shop_mobile']}}" @endif required="" maxlength="15" minlength="11">
                             </div>
                             <div class="form-group">
                                 <label for="business_license_number">Business License Number</label>
-                                <input type="text" class="form-control" id="business_license_number" placeholder="Enter Business License Number" name="business_license_number" value="{{$vendorDetails['business_license_number']}}">
+                                <input type="text" class="form-control" id="business_license_number" placeholder="Enter Business License Number" name="business_license_number" @if(isset($vendorDetails['business_license_number'])) value="{{$vendorDetails['business_license_number']}}" @endif>
                             </div>
                             <div class="form-group">
                                 <label for="gst_number">GST Number</label>
-                                <input type="text" class="form-control" id="gst_number" placeholder="Enter GST Number" name="gst_number" value="{{$vendorDetails['gst_number']}}">
+                                <input type="text" class="form-control" id="gst_number" placeholder="Enter GST Number" name="gst_number" @if(isset($vendorDetails['gst_number'])) value="{{$vendorDetails['gst_number']}}" @endif>
                             </div>
                             <div class="form-group">
                                 <label for="pan_number">PAN Number</label>
-                                <input type="text" class="form-control" id="pan_number" placeholder="Enter PAN Number" name="pan_number" value="{{$vendorDetails['pan_number']}}">
+                                <input type="text" class="form-control" id="pan_number" placeholder="Enter PAN Number" name="pan_number" @if(isset($vendorDetails['pan_number'])) value="{{$vendorDetails['pan_number']}}" @endif>
                             </div>
                             <div class="form-group">
                                 <label for="address_proof">Address Proof</label>
                                 <select class="form-control" name="address_proof" id="address_proof">
-                                    <option value="Passport" @if($vendorDetails['address_proof']=="Passport" ) selected @endif>Passport</option>
-                                    <option value="Voting Card" @if($vendorDetails['address_proof']=="Voting Card" ) selected @endif>Voting Card</option>
-                                    <option value="PAN" @if($vendorDetails['address_proof']=="PAN" ) selected @endif>PAN</option>
-                                    <option value="Driving License" @if($vendorDetails['address_proof']=="Driving License" ) selected @endif>Driving License</option>
-                                    <option value="Aadhar card" @if($vendorDetails['address_proof']=="Aadhar Card" ) selected @endif>Aadhar Card</option>
+                                    <option value="Passport" @if(isset($vendorDetails['address_proof']) && $vendorDetails['address_proof']=="Passport" ) selected @endif>Passport</option>
+                                    <option value="Voting Card" @if(isset($vendorDetails['address_proof']) && $vendorDetails['address_proof']=="Voting Card" ) selected @endif>Voting Card</option>
+                                    <option value="PAN" @if(isset($vendorDetails['address_proof']) && $vendorDetails['address_proof']=="PAN" ) selected @endif>PAN</option>
+                                    <option value="Driving License" @if(isset($vendorDetails['address_proof']) && $vendorDetails['address_proof']=="Driving License" ) selected @endif>Driving License</option>
+                                    <option value="Aadhar card" @if(isset($vendorDetails['address_proof']) && $vendorDetails['address_proof']=="Aadhar Card" ) selected @endif>Aadhar Card</option>
                                 </select>
                             </div>
                             <div class="form-group">

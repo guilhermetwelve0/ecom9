@@ -59,7 +59,11 @@
                                             {{$admin['email']}}
                                         </td>
                                         <td>
+                                            @if($admin['image']!="")
                                             <img src="{{ asset('admin/images/photos/'.$admin['image'])}}">
+                                            @else
+                                            <img src="{{ asset('admin/images/photos/no-image.gif')}}">
+                                            @endif
                                         </td>
                                         <td>
                                             @if($admin['status'] ==1)
@@ -68,7 +72,7 @@
                                             @else
                                             <a class="updateAdminStatus" id="admin-{{$admin['id']}}" admin_id="{{$admin['id']}}" href="javascript:void(0)">
                                                 <i style="font-size:25px;" class="mdi mdi-bookmark-outline" status="Inactive"></i></a>
-                                                @endif
+                                            @endif
                                         </td>
                                         <td>
                                             @if($admin['type'] =="vendor")
