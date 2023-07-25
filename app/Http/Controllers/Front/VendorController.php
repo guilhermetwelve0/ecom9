@@ -98,7 +98,7 @@ class VendorController extends Controller
     }
     public function confirmVendor($email) {
         //Decode Vendor Email
-        $email = base64_decode($email); die;
+        $email = base64_decode($email);
         //Check Vendor Email exists
         $vendorCount = Vendor::where('email',$email)->count();
         if($vendorCount>0){

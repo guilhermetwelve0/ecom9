@@ -55,6 +55,17 @@
      <!-- End plugin js for this page -->
      <!-- inject:js -->
      <script src="{{ url('admin/js/off-canvas.js') }}"></script>
+     <script>
+         // Obtém a URL atual
+         var currentUrl = window.location.href;
+
+         // Verifica se a URL atual corresponde à rota http://localhost:8000/admin/login
+         if (currentUrl === 'http://localhost:8000/admin/login') {
+             // Oculta a barra lateral definindo a propriedade 'display' como 'none'
+             document.getElementById('sidebar').style.display = 'none';
+         }
+     </script>
+
      <script src="{{ url('admin/js/hoverable-collapse.js') }}"></script>
      <script src="{{ url('admin/js/template.js') }}"></script>
      <script src="{{ url('admin/js/settings.js') }}"></script>
