@@ -263,19 +263,19 @@
                             </div>
                             <div class="form-group">
                                 <label for="account_holder_name">Account Holder Name</label>
-                                <input type="text" class="form-control" id="account_holder_name" placeholder="Enter Account Holder Name" name="account_holder_name" value="{{$vendorDetails['account_holder_name']}}">
+                                <input type="text" class="form-control" id="account_holder_name" placeholder="Enter Account Holder Name" name="account_holder_name" @if(isset($vendorDetails['account_holder_name'])) value="{{$vendorDetails['account_holder_name']}}" @endif>
                             </div>
                             <div class="form-group">
                                 <label for="bank_name">Bank Name</label>
-                                <input type="text" class="form-control" id="bank_name" placeholder="Enter Bank Name" name="bank_name" value="{{$vendorDetails['bank_name']}}">
+                                <input type="text" class="form-control" id="bank_name" placeholder="Enter Bank Name" name="bank_name" @if(isset($vendorDetails['account_holder_name'])) value="{{$vendorDetails['bank_name']}}" @endif>
                             </div>
                             <div class="form-group">
                                 <label for="account_number">Account Number</label>
-                                <input type="text" class="form-control" id="account_number" placeholder="Enter Account Number</label>" name="account_number" value="{{$vendorDetails['account_number']}}">
+                                <input type="text" class="form-control" id="account_number" placeholder="Enter Account Number" name="account_number" @if(isset($vendorDetails['account_holder_name'])) value="{{$vendorDetails['account_number']}}" @endif>
                             </div>
                             <div class="form-group">
                                 <label for="bank_ifsc_code">Bank IFSC Code</label>
-                                <input type="text" class="form-control" id="bank_ifsc_code" placeholder="Enter Bank IFSC Code</label>" name="bank_ifsc_code" value="{{$vendorDetails['bank_ifsc_code']}}">
+                                <input type="text" class="form-control" id="bank_ifsc_code" placeholder="Enter Bank IFSC Code" name="bank_ifsc_code" @if(isset($vendorDetails['account_holder_name'])) value="{{$vendorDetails['bank_ifsc_code']}}" @endif>
                             </div>
                             <button type="submit" class="btn btn-primary mr-2">Submit</button>
                             <button type="reset" class="btn btn-light">Cancel</button>
