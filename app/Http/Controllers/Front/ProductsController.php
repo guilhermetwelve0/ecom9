@@ -120,4 +120,7 @@ class ProductsController extends Controller
             }
         }
     }
+    public function detail(){
+        return view('front.products.detail');
+    }
 }
