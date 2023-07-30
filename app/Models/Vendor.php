@@ -9,4 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Vendor extends Model
 {
     use HasFactory;
+    public function vendorbusinessdetails(){
+        return $this->belongsTo('App\Models\VendorsBusinessDetail','id','vendor_id');
+    }
 }

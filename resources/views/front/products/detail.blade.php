@@ -1,8 +1,13 @@
-@extends('front.layout.layout')
-@section('content')
 <?php
 
-use App\Models\Product; ?>
+use App\Models\Product;
+use App\Models\ProductsFilter;
+
+$productFilters = ProductsFilter::productFilters();
+// dd($productFilters);
+?>
+@extends('front.layout.layout')
+@section('content')
 <!-- Page Introduction Wrapper -->
 <div class="page-style-a">
     <div class="container">
@@ -28,18 +33,20 @@ use App\Models\Product; ?>
         <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-12">
                 <!-- Product-zoom-area -->
-                <div class="zoom-area">
-                    <img id="zoom-pro" class="img-fluid" src="{{asset('front/images/product_images/large/'.$productDetails['product_image'])}}" data-zoom-image="{{asset('front/images/product_images/large/'.$productDetails['product_image'])}}" alt="Zoom Image">
-                    <div id="gallery" class="u-s-m-t-10">
-                        <a class="active" data-image="{{asset('front/images/product_images/large/'.$productDetails['product_image'])}}" data-zoom-image="{{asset('front/images/product_images/large/'.$productDetails['product_image'])}}">
-                            <img src="{{asset('front/images/product_images/large/'.$productDetails['product_image'])}}" alt="Product">
-                        </a>
-                        @foreach($productDetails['images'] as $image)
-                        <a data-image="{{asset('front/images/product_images/large/'.$image['image'])}}" data-zoom-image="{{asset('front/images/product_images/large/'.$image['image'])}}">
-                            <img src="{{asset('front/images/product_images/large/'.$image['image'])}}" alt="Product">
-                        </a>
-                        @endforeach
-                    </div>
+                <div class="easyzoom easyzoom--overlay easyzoom--with-thumbnails">
+                    <a href="{{asset('front/images/product_images/large/'.$productDetails['product_image'])}}" data-zoom-image="{{asset('front/images/product_images/large/'.$productDetails['product_image'])}}">
+                        <img src="{{asset('front/images/product_images/large/'.$productDetails['product_image'])}}" data-zoom-image="{{asset('front/images/product_images/large/'.$productDetails['product_image'])}}" alt="" width="500" height="500" />
+                    </a>
+                </div>
+                <div class="thumbnails" style="margin-top:30px;">
+                    <a href="{{asset('front/images/product_images/large/'.$productDetails['product_image'])}}" data-standard="{{asset('front/images/product_images/small/'.$productDetails['product_image'])}}">
+                        <img width="120" height="120" src="{{asset('front/images/product_images/small/'.$productDetails['product_image'])}}" alt="" />
+                    </a>
+                    @foreach($productDetails['images'] as $image)
+                    <a href="{{asset('front/images/product_images/large/'.$image['image'])}}" data-standard="{{asset('front/images/product_images/small/'.$image['image'])}}">
+                        <img width="120" height="120" src="{{asset('front/images/product_images/small/'.$image['image'])}}" alt="" />
+                    </a>
+                    @endforeach
                 </div>
                 <!-- Product-zoom-area /- -->
             </div>
@@ -75,21 +82,21 @@ use App\Models\Product; ?>
                     <div class="section-3-price-original-discount u-s-p-y-14">
                         <?php $getDiscountPrice = Product::getDiscountPrice($productDetails['id']); ?>
                         <span class="getAttributePrice">
-                        @if($getDiscountPrice >= 0)
-                        <div class="price">
-                            <h4>Rs.{{ $getDiscountPrice }}</h4>
-                        </div>
-                        @if($getDiscountPrice != $productDetails['product_price'])
-                        <div class="original-price">
-                            <span>Original Price:</span>
-                            <span>Rs.{{ $productDetails['product_price'] }}</span>
-                        </div>
-                        @endif
-                        @else
-                        <div class="price">
-                            <h4>Rs.{{ $productDetails['product_price'] }}</h4>
-                        </div>
-                        @endif
+                            @if($getDiscountPrice >= 0)
+                            <div class="price">
+                                <h4>Rs.{{ $getDiscountPrice }}</h4>
+                            </div>
+                            @if($getDiscountPrice != $productDetails['product_price'])
+                            <div class="original-price">
+                                <span>Original Price:</span>
+                                <span>Rs.{{ $productDetails['product_price'] }}</span>
+                            </div>
+                            @endif
+                            @else
+                            <div class="price">
+                                <h4>Rs.{{ $productDetails['product_price'] }}</h4>
+                            </div>
+                            @endif
                         </span>
                     </div>
 
@@ -118,6 +125,9 @@ use App\Models\Product; ?>
                         </div>
                         @endif
                     </div>
+                    @if(isset($productDetails['vendor']))
+                    <div>Sold by {{$productDetails['vendor']['vendorbusinessdetails']['shop_name']}}</div>
+                    @endif
                     <div class="section-5-product-variants u-s-p-y-14">
                         <!-- <h6 class="information-heading u-s-m-b-8">Product Variants:</h6> -->
                         <!-- <div class="color u-s-m-b-11">
@@ -202,7 +212,7 @@ use App\Models\Product; ?>
                                 <a class="nav-link active" data-toggle="tab" href="#video">Product Video</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#specification">Specifications</a>
+                                <a class="nav-link" data-toggle="tab" href="#detail">Product Detail</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" data-toggle="tab" href="#review">Reviews (15)</a>
@@ -223,69 +233,32 @@ use App\Models\Product; ?>
                             </div>
                         </div>
                         <!-- Description-Tab /- -->
-                        <!-- Specifications-Tab -->
-                        <div class="tab-pane fade" id="specification">
+                        <!-- Details-Tab -->
+                        <div class="tab-pane fade" id="detail">
                             <div class="specification-whole-container">
-                                <div class="spec-ul u-s-m-b-50">
-                                    <h4 class="spec-heading">Key Features</h4>
-                                    <ul>
-                                        <li>Heather Grey</li>
-                                        <li>Black</li>
-                                        <li>White</li>
-                                    </ul>
-                                </div>
-                                <div class="u-s-m-b-50">
-                                    <h4 class="spec-heading">What's in the Box?</h4>
-                                    <h3 class="spec-answer">1 x hoodie</h3>
-                                </div>
                                 <div class="spec-table u-s-m-b-50">
-                                    <h4 class="spec-heading">General Information</h4>
+                                    <h4 class="spec-heading">Product Detail</h4>
                                     <table>
+                                        @foreach($productFilters as $filter)
+                                        @if(isset($productDetails['category_id']))
+                                        <?php
+                                        $filterAvailable = ProductsFilter::filterAvailable(
+                                            $filter['id'],
+                                            $productDetails['category_id']
+                                        );
+                                        ?>
+                                        @if($filterAvailable=="Yes")
                                         <tr>
-                                            <td>Sku</td>
-                                            <td>AY536FA08JT86NAFAMZ</td>
+                                            <td>{{$filter['filter_name']}}</td>
+                                            <td>@foreach($filter['filter_values'] as $value)
+                                                @if(!empty($productDetails[$filter['filter_column']]) && $value['filter_value']==$productDetails[$filter['filter_column']]){{ucwords($value['filter_value'])}}
+                                                @endif
+                                                @endforeach
+                                            </td>
                                         </tr>
-                                    </table>
-                                </div>
-                                <div class="spec-table u-s-m-b-50">
-                                    <h4 class="spec-heading">Product Information</h4>
-                                    <table>
-                                        <tr>
-                                            <td>Main Material</td>
-                                            <td>Cotton</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Color</td>
-                                            <td>Heather Grey, Black, White</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Sleeves</td>
-                                            <td>Long Sleeve</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Top Fit</td>
-                                            <td>Regular</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Print</td>
-                                            <td>Not Printed</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Neck</td>
-                                            <td>Round Neck</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Pieces Count</td>
-                                            <td>1 piece</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Occasion</td>
-                                            <td>Casual</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Shipping Weight (kg)</td>
-                                            <td>0.5</td>
-                                        </tr>
+                                        @endif
+                                        @endif
+                                        @endforeach
                                     </table>
                                 </div>
                             </div>
