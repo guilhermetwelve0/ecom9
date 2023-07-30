@@ -121,9 +121,21 @@ class ProductsController extends Controller
         }
     }
     public function detail($id){
-        $productDetails = Product::with('section','category','brand','attributes','images')->find($id)->toArray();
+        $productDetails = Product::with(['section','category','brand','attributes'=>function($query){
+             $query->where('stock','>',0)->where('status',1);
+        },'images'])->find($id)->toArray();
         $categoryDetails = Category::categoryDetails($productDetails['category']['url']);
         // dd($productDetails);
-        return view('front.products.detail')->with(compact('productDetails','categoryDetails'));
+        $totalStock = ProductsAttribute::where('product_id',$id)->sum('stock');
+        return view('front.products.detail')->with(compact('productDetails','categoryDetails','totalStock'));
+    }
+
+    public function getProductPrice(Request $request){
+        if($request->ajax()){
+            $data = $request->all();
+            //  echo "<pre>"; print_r($data); die;
+            $getDiscountedAttrPrice = Product::getDiscountAttributePrice($data['product_id'],$data['size']);
+            return $getDiscountedAttrPrice;
+        }
     }
 }
