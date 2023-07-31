@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductsAttribute;
 use App\Models\ProductsFilter;
+use App\Models\Vendor;
 
 class ProductsController extends Controller
 {
@@ -120,6 +121,15 @@ class ProductsController extends Controller
             }
         }
     }
+   public function vendorListing($vendorid){
+    //Get Vendor Shop Name
+    $getVendorShop = Vendor::getVendorShop($vendorid);
+    //Get Vendor Products
+    $vendorProducts = Product::with('brand')->where('vendor_id',$vendorid)->where('status',1);
+    $vendorProducts = $vendorProducts->paginate(30);
+    return view('front.products.vendor_listing')->with(compact('getVendorShop','vendorProducts'));
+   }
+
     public function detail($id){
         $productDetails = Product::with(['section','category','brand','attributes'=>function($query){
              $query->where('stock','>',0)->where('status',1);
