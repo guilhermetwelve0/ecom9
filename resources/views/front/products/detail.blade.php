@@ -142,21 +142,37 @@ $productFilters = ProductsFilter::productFilters();
                         </div> -->
 
                         @php
-                        $groupProducts = [];
+                        $groupProducts = []; // Inicialize a variável como um array vazio
+
+                        // Recupere os dados dos produtos do grupo e atribua à variável
+                        if(!empty($productDetails['group_code'])){
+                        $groupProducts = \App\Models\Product::select('id', 'product_image')
+                        ->where('group_code', $productDetails['group_code'])
+                        ->where('status', 1)
+                        ->where('id', '!=', $productDetails['id'])
+                        ->get()
+                        ->toArray();
+                        }
                         @endphp
 
-                        @if(count($groupProducts)>=0)
+                        @if(count($groupProducts) > 0)
                         <div>
                             <div><strong>Product Colors</strong></div>
-                            <div>
+                            <div style="margin-top: 10px;">
                                 @foreach($groupProducts as $product)
-                                <a href="{{ url('product/'.$product['id']) }}"><img style="width: 50px;" src="{{ asset('front/images/product_images/small/'.$product['product_image']) }}"></a>
+                                <a href="{{ url('product/'.$product['id']) }}">
+                                    <img style="width: 80px;" src="{{ asset('front/images/product_images/small/'.$product['product_image']) }}">
+                                </a>
                                 @endforeach
                             </div>
                         </div>
                         @endif
 
-                        <div class="sizes u-s-m-b-11">
+
+
+
+
+                        <div class="sizes u-s-m-b-11" style="margin-top: 10px;">
                             <span>Available Size:</span>
                             <div class="size-variant select-box-wrapper">
                                 <select name="size" id="getPrice" product-id="{{$productDetails['id']}}" class="select-box product-size">
