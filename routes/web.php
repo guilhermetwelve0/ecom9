@@ -147,7 +147,11 @@ Route::namespace('App\Http\Controllers\Front')->group(function(){
 
    //Confirm Vendor Account
     Route::get('vendor/confirm/{code}', 'VendorController@confirmVendor');
+
+   //Add to Cart Route
+   Route::post('cart/add','ProductsController@cartAdd');
 });
+
 
 Route::get('/swagger', function () {
     return view('vendor.darkaonline.l5-swagger.index');
