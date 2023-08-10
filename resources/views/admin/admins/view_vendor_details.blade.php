@@ -85,55 +85,55 @@
                         <h4 class="card-title">Business Information</h4>
                         <div class="form-group">
                             <label for="vendor_name">Shop Name</label>
-                            <input type="text" class="form-control" @if(isset($vendorDetails['shop_name'])) value="{{$vendorDetails['shop_name']}}" @endif readonly="">
+                            <input type="text" class="form-control" @if(isset($vendorDetails['vendor_business']['shop_name'])) value="{{$vendorDetails['vendor_business']['shop_name']}}" @endif readonly="">
                         </div>
                         <div class="form-group">
                             <label for="vendor_address">Shop Address</label>
-                            <input type="text" class="form-control" @if(isset($vendorDetails['shop_address'])) value="{{$vendorDetails['shop_address']}}" @endif readonly="">
+                            <input type="text" class="form-control" @if(isset($vendorDetails['vendor_business']['shop_address'])) value="{{$vendorDetails['vendor_business']['shop_address']}}" @endif readonly="">
                         </div>
                         <div class="form-group">
                             <label for="vendor_city">Shop City</label>
-                            <input type="text" class="form-control" @if(isset($vendorDetails['shop_city'])) value="{{$vendorDetails['shop_city']}}" @endif readonly="">
+                            <input type="text" class="form-control" @if(isset($vendorDetails['vendor_business']['shop_city'])) value="{{$vendorDetails['vendor_business']['shop_city']}}" @endif readonly="">
                         </div>
                         <div class="form-group">
                             <label for="vendor_state">Shop State</label>
-                            <input type="text" class="form-control" @if(isset($vendorDetails['shop_state'])) value="{{$vendorDetails['shop_state']}}" @endif readonly="">
+                            <input type="text" class="form-control" @if(isset($vendorDetails['vendor_business']['shop_state'])) value="{{$vendorDetails['vendor_business']['shop_state']}}" @endif readonly="">
                         </div>
                         <div class="form-group">
                             <label for="vendor_country">Shop Country</label>
-                            <input type="text" class="form-control" @if(isset($vendorDetails['shop_country'])) @endif readonly="">
+                            <input type="text" class="form-control" @if(isset($vendorDetails['vendor_business']['shop_country'])) @endif readonly="">
                         </div>
                         <div class="form-group">
                             <label for="vendor_pincode">Shop Pincode</label>
-                            <input type="text" class="form-control" @if(isset($vendorDetails['shop_pincode'])) value="{{$vendorDetails['shop_pincode']}}" @endif readonly="">
+                            <input type="text" class="form-control" @if(isset($vendorDetails['vendor_business']['shop_pincode'])) value="{{$vendorDetails['vendor_business']['shop_pincode']}}" @endif readonly="">
                         </div>
                         <div class="form-group">
                             <label for="vendor_mobile">Shop Mobile</label>
-                            <input type="text" class="form-control" @if(isset($vendorDetails['shop_mobile'])) value="{{$vendorDetails['shop_mobile']}}" @endif readonly="">
+                            <input type="text" class="form-control" @if(isset($vendorDetails['vendor_business']['shop_mobile'])) value="{{$vendorDetails['vendor_business']['shop_mobile']}}" @endif readonly="">
                         </div>
                         <div class="form-group">
                             <label>Shop Website</label>
-                            <input class="form-control" @if(isset($vendorDetails['shop_website'])) value="{{$vendorDetails['shop_website']}}" @endif readonly="">
+                            <input class="form-control" @if(isset($vendorDetails['vendor_business']['shop_website'])) value="{{$vendorDetails['vendor_business']['shop_website']}}" @endif readonly="">
                         </div>
                         <div class="form-group">
                             <label>Shop Email</label>
-                            <input class="form-control" @if(isset($vendorDetails['shop_email'])) value="{{$vendorDetails['shop_email']}}" @endif readonly="">
+                            <input class="form-control" @if(isset($vendorDetails['vendor_business']['shop_email'])) value="{{$vendorDetails['vendor_business']['shop_email']}}" @endif readonly="">
                         </div>
                         <div class="form-group">
                             <label>Address Proof</label>
-                            <input class="form-control" @if(isset($vendorDetails['vendor_business']['address_proof'])))) value="{{$vendorDetails['vendor_business']['address_proof']}}" @endif readonly="">
+                            <input class="form-control" @if(isset($vendorDetails['vendor_business']['vendor_business']['address_proof'])))) value="{{$vendorDetails['vendor_business']['vendor_business']['address_proof']}}" @endif readonly="">
                         </div>
                         <div class="form-group">
                             <label>Business License Number</label>
-                            <input class="form-control" @if(isset($vendorDetails['business_license_number'])) value="{{$vendorDetails['business_license_number']}}" @endif readonly="">
+                            <input class="form-control" @if(isset($vendorDetails['vendor_business']['business_license_number'])) value="{{$vendorDetails['vendor_business']['business_license_number']}}" @endif readonly="">
                         </div>
                         <div class="form-group">
                             <label>GST Number</label>
-                            <input class="form-control" @if(isset($vendorDetails['gst_number'])) value="{{$vendorDetails['gst_number']}}" @endif readonly="">
+                            <input class="form-control" @if(isset($vendorDetails['vendor_business']['gst_number'])) value="{{$vendorDetails['vendor_business']['gst_number']}}" @endif readonly="">
                         </div>
                         <div class="form-group">
                             <label>Pan Number</label>
-                            <input class="form-control" @if(isset($vendorDetails['pan_number'])) value="{{$vendorDetails['pan_number']}}" @endif readonly="">
+                            <input class="form-control" @if(isset($vendorDetails['vendor_business']['pan_number'])) value="{{$vendorDetails['vendor_business']['pan_number']}}" @endif readonly="">
                         </div>
                         @if(!empty($vendorDetails['image']))
                         <div class="form-group">
@@ -157,19 +157,19 @@
                         <h4 class="card-title">Bank Information</h4>
                         <div class="form-group">
                             <label for="vendor_name">Account Holder Name</label>
-                            <input type="text" class="form-control" @if(isset($vendorDetails['account_holder_name'])) value="{{$vendorDetails['account_holder_name']}}" @endif readonly="">
+                            <input type="text" class="form-control" @if(isset($vendorDetails['vendor_bank']['account_holder_name'])) value="{{$vendorDetails['vendor_bank']['account_holder_name']}}" @endif readonly="">
                         </div>
                         <div class="form-group">
                             <label for="vendor_name">Bank Name</label>
-                            <input type="text" class="form-control" @if(isset($vendorDetails['account_holder_name'])) value="{{$vendorDetails['bank_name']}}" @endif readonly="">
+                            <input type="text" class="form-control" @if(isset($vendorDetails['vendor_bank']['account_holder_name'])) value="{{$vendorDetails['vendor_bank']['bank_name']}}" @endif readonly="">
                         </div>
                         <div class="form-group">
                             <label for="vendor_address">Account Number</label>
-                            <input type="text" class="form-control" @if(isset($vendorDetails['account_holder_name'])) value="{{$vendorDetails['account_number']}}" @endif readonly="">
+                            <input type="text" class="form-control" @if(isset($vendorDetails['vendor_bank']['account_holder_name'])) value="{{$vendorDetails['vendor_bank']['account_number']}}" @endif readonly="">
                         </div>
                         <div class="form-group">
                             <label for="vendor_city">IFSC Code</label>
-                            <input type="text" class="form-control" @if(isset($vendorDetails['account_holder_name'])) value="{{$vendorDetails['bank_ifsc_code']}}" @endif readonly="">
+                            <input type="text" class="form-control" @if(isset($vendorDetails['vendor_bank']['account_holder_name'])) value="{{$vendorDetails['vendor_bank']['bank_ifsc_code']}}" @endif readonly="">
                         </div>
                     </div>
                 </div>
