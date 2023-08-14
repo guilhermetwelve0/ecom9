@@ -235,4 +235,11 @@ class ProductsController extends Controller
         // dd($getCartItems);
         return view('front.products.cart')->with(compact('getCartItems'));
     }
+
+    public function cartUpdate(Request $request){
+        if($request->ajax()){
+            $data = $request->all();
+            echo "<pre>"; print_r($data); die;
+        }
+    }
 }
