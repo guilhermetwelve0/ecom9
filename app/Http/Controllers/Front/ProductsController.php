@@ -272,12 +272,23 @@ class ProductsController extends Controller
             }
 
             // Update the Qty
-
             Cart::where('id', $data['cartid'])->update(['quantity'=>$data['qty']]);
             $getCartItems = Cart::getCartItems();
             return response()->json([
                 'status'=>true,
                 'view'=>(String)View::make('front.products.cart_items')->with(compact('getCartItems'))
+            ]);
+        }
+    }
+
+    public function cartDelete(Request $request){
+        if($request->ajax()){
+            $data = $request->all();
+            // echo "<pre>"; print_r($data); die;
+            Cart::where('id', $data['cartid'])->delete();
+            $getCartItems = Cart::getCartItems();
+            return response()->json([
+                'view' => (string)View::make('front.products.cart_items')->with(compact('getCartItems'))
             ]);
         }
     }

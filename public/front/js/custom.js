@@ -60,6 +60,45 @@ $(document).ready(function() {
       }
     });
   });
+
+  //Delete Cart Item
+  $(document).on('click', '.deleteCartitem',function(){
+    var cartid = $(this).data('cartid');
+    var result = confirm("Are you sure to delete this Cart Item?");
+    if(result){
+          $.ajax({
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+        },
+        data:{cartid: cartid},
+        url:'/cart/delete',
+        type:'post',
+        success: function(resp){
+            $("#appendCartItems").html(resp.view);
+        },error: function(){
+            alert("Error");
+        }
+    })
+    }
+  });
+
+  // Register Form Validation
+  $("#registerForm").submit(function(){
+    var formdata = $(this).serialize();
+    $.ajax({
+       headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+        },
+      url:"/user/register",
+      type:"POST",
+      data:formdata,
+      success:function(resp){
+        window.location.href = resp.url;
+      },error:function(){
+        alert("Error");
+      }
+    })
+  });
 });
 
 
