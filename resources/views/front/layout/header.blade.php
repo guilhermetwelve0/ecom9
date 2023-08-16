@@ -28,7 +28,7 @@
                     <nav>
                         <ul class="secondary-nav g-nav">
                             <li>
-                                <a>My Account
+                                <a>@if(Auth::check()) My Account @else Login/Register @endif
                                     <i class="fas fa-chevron-down u-s-m-l-9"></i>
                                 </a>
                                 <ul class="g-dropdown" style="width:200px">
@@ -42,11 +42,23 @@
                                             <i class="far fa-heart u-s-m-r-9"></i>
                                             My Wishlist</a>
                                     </li>
-                                    <li>
+                                    <!-- <li>
                                         <a href="checkout.html">
                                             <i class="far fa-check-circle u-s-m-r-9"></i>
                                             Checkout</a>
+                                    </li> -->
+                                    @if(Auth::check())
+                                    <li>
+                                        <a href="{{url('user/account')}}">
+                                            <i class="fas fa-sign-in-alt u-s-m-r-9"></i>
+                                            My Account</a>
                                     </li>
+                                    <li>
+                                        <a href="{{url('user/logout')}}">
+                                            <i class="fas fa-sign-in-alt u-s-m-r-9"></i>
+                                            Logout</a>
+                                    </li>
+                                    @else
                                     <li>
                                         <a href="{{url('user/login-register')}}">
                                             <i class="fas fa-sign-in-alt u-s-m-r-9"></i>
@@ -57,6 +69,7 @@
                                             <i class="fas fa-sign-in-alt u-s-m-r-9"></i>
                                             Vendor Login</a>
                                     </li>
+                                    @endif
                                 </ul>
                             </li>
                             <li>
