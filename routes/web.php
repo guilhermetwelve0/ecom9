@@ -166,6 +166,9 @@ Route::namespace('App\Http\Controllers\Front')->group(function(){
     //User Register
     Route::post('user/register', 'UserController@userRegister');
 
+    //User Login
+    Route::post('user/login', 'UserController@userLogin');
+
     //User Logout
     Route::get('user/logout', 'UserController@userLogout'); 
 
