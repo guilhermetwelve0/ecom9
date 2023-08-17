@@ -104,6 +104,7 @@ $(document).ready(function () {
             }, 6000);
           });
         } else if (resp.type == "success") {
+          alert(resp.message);
           window.location.href = resp.url;
         }
       }, error: function () {

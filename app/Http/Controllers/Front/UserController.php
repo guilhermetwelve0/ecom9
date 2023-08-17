@@ -43,26 +43,46 @@ class UserController extends Controller
                 $user->mobile = $data['mobile'];
                 $user->email = $data['email'];
                 $user->password = bcrypt($data['password']);
-                $user->status = 1;
+                $user->status = 0;
                 $user->save();
 
-                //Send Register Email
+                //Activate the user only when user confirms his email account
                 $email = $data['email'];
-                $messageData = ['name'=>$data['name'], 'mobile'=>$data['mobile'],'email'=>$data['email']];
-                Mail::send('emails.register',$messageData,function($message) use ($email){
-                    $message->to($email)->subject('Welcome to Stack Developers');
+                $messageData = [
+                    'name' => $data['name'],
+                    'email' => $data['email'],
+                    'code' => base64_encode($data['email'])
+                ];
+
+
+                Mail::send('emails.confirmation', $messageData, function ($message) use ($email) {
+                    $message->to($email)->subject('Confirm your Stack Developers Account');
                 });
+
+                //Redirect back user with success message
+                $redirectTo = url('user/login-register');
+                return response()->json(['type'=>'success','url'=>$redirectTo,'message'=>'Please confirm your email to activate your account!']);
+
+                //Activate the user straight way without sending any confirmation email
+                // //Send Register Email
+                // $email = $data['email'];
+                // $messageData = ['name'=>$data['name'], 'mobile'=>$data['mobile'],'email'=>$data['email']];
+                // Mail::send('emails.register',$messageData,function($message) use ($email){
+                //     $message->to($email)->subject('Welcome to Stack Developers');
+                // });
     
-                if (Auth::attempt(['email' => $data['email'], 'password' => $data['password']])) {
-                    $redirectTo = url('cart');
-                    //Update User Cart with user id
-                    if (!empty(Session::get('session_id'))) {
-                        $user_id = Auth::user()->id;
-                        $session_id = Session::get('session_id');
-                        Cart::where('session_id', $session_id)->update(['user_id' => $user_id]);
-                    }
-                    return response()->json(['type' => 'success','url' => $redirectTo]);
-                }
+                // if (Auth::attempt(['email' => $data['email'], 'password' => $data['password']])) {
+                //     $redirectTo = url('cart');
+                //     //Update User Cart with user id
+                //     if (!empty(Session::get('session_id'))) {
+                //         $user_id = Auth::user()->id;
+                //         $session_id = Session::get('session_id');
+                //         Cart::where('session_id', $session_id)->update(['user_id' => $user_id]);
+                //     }
+                //     return response()->json(['type' => 'success','url' => $redirectTo]);
+                // }
+
+
 
             }else{
                 return response()->json(['type'=>'error','errors'=>$validator->messages()]);
