@@ -213,7 +213,7 @@ class ProductsController extends Controller
             $user_id = Auth::user()->id;
             $countProducts = Cart::where(['product_id'=>$data['product_id'],'size'=>$data['size'],'user_id'=>$user_id])->count();
             }else{
-                //User is not logged in
+            //User is not logged in
             $user_id = 0;
             $countProducts = Cart::where(['product_id' => $data['product_id'],'size'=>$data['size'],'session_id'=>$session_id])->count();
             }
@@ -278,8 +278,10 @@ class ProductsController extends Controller
             // Update the Qty
             Cart::where('id', $data['cartid'])->update(['quantity'=>$data['qty']]);
             $getCartItems = Cart::getCartItems();
+            $totalCartItems = totalCartItems();
             return response()->json([
                 'status'=>true,
+                'totalCartItems'=>$totalCartItems,
                 'view'=>(String)View::make('front.products.cart_items')->with(compact('getCartItems'))
             ]);
         }
@@ -291,7 +293,9 @@ class ProductsController extends Controller
             // echo "<pre>"; print_r($data); die;
             Cart::where('id', $data['cartid'])->delete();
             $getCartItems = Cart::getCartItems();
+            $totalCartItems = totalCartItems();
             return response()->json([
+                'totalCartItems' => $totalCartItems,
                 'view' => (string)View::make('front.products.cart_items')->with(compact('getCartItems'))
             ]);
         }

@@ -51,6 +51,7 @@ $(document).ready(function () {
       url: '/cart/update',
       type: 'post',
       success: function (resp) {
+        $(".totalCartItems").html(resp.totalCartItems);
         if (resp.status == false) {
           alert(resp.message);
         }
@@ -74,6 +75,7 @@ $(document).ready(function () {
         url: '/cart/delete',
         type: 'post',
         success: function (resp) {
+          $(".totalCartItems").html(resp.totalCartItems);
           $("#appendCartItems").html(resp.view);
         }, error: function () {
           // alert("Error");
@@ -159,6 +161,7 @@ $(document).ready(function () {
 
   // Password Form Validation
   $("#passwordForm").submit(function () {
+    alert
     $(".loader").show();
     var formdata = $(this).serialize();
     $.ajax({
@@ -180,6 +183,15 @@ $(document).ready(function () {
               });
             }, 6000);
           });
+        }else if (resp.type == "incorrect") {
+          $(".loader").hide();
+            $("#password-error").attr('style', 'color:red');
+            $("#password-error").html(resp.message);
+            setTimeout(function () {
+              $("#password-error").css({
+                'display': 'none'
+              });
+            }, 6000);
         } else if (resp.type == "success") {
           // alert(resp.message);
           $(".loader").hide();

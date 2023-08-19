@@ -9,6 +9,7 @@ use App\Models\Cart;
 use App\Models\Country;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -25,20 +26,22 @@ class UserController extends Controller
         if ($request->ajax()) {
             $data = $request->all();
 
-            $validator = Validator::make($request->all(), [
-                'name' => 'required|string|max:100',
-                'mobile' => 'required|numeric|digits:11',
-                'email' => 'required|email|max:150|unique:users',
-                'password' => 'required|min:6',
-                'accept' => 'required'
-            ],
-            [
-                'accept.required'=>'Please accept our Terms & Conditions'
-            ]
-        );
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    'name' => 'required|string|max:100',
+                    'mobile' => 'required|numeric|digits:11',
+                    'email' => 'required|email|max:150|unique:users',
+                    'password' => 'required|min:6',
+                    'accept' => 'required'
+                ],
+                [
+                    'accept.required' => 'Please accept our Terms & Conditions'
+                ]
+            );
 
 
-            if($validator->passes()){
+            if ($validator->passes()) {
                 //Register the User
                 $user = new User;
                 $user->name = $data['name'];
@@ -63,7 +66,7 @@ class UserController extends Controller
 
                 //Redirect back user with success message
                 $redirectTo = url('user/login-register');
-                return response()->json(['type'=>'success','url'=>$redirectTo,'message'=>'Please confirm your email to activate your account!']);
+                return response()->json(['type' => 'success', 'url' => $redirectTo, 'message' => 'Please confirm your email to activate your account!']);
 
                 //Activate the user straight way without sending any confirmation email
                 // //Send Register Email
@@ -72,7 +75,7 @@ class UserController extends Controller
                 // Mail::send('emails.register',$messageData,function($message) use ($email){
                 //     $message->to($email)->subject('Welcome to Stack Developers');
                 // });
-    
+
                 // if (Auth::attempt(['email' => $data['email'], 'password' => $data['password']])) {
                 //     $redirectTo = url('cart');
                 //     //Update User Cart with user id
@@ -86,14 +89,15 @@ class UserController extends Controller
 
 
 
-            }else{
-                return response()->json(['type'=>'error','errors'=>$validator->messages()]);
+            } else {
+                return response()->json(['type' => 'error', 'errors' => $validator->messages()]);
             }
         }
     }
 
-    public function userAccount(Request $request){
-        if($request->ajax()){
+    public function userAccount(Request $request)
+    {
+        if ($request->ajax()) {
             $data = $request->all();
             // echo "<pre>"; print_r($data); die;
             $validator = Validator::make(
@@ -108,23 +112,65 @@ class UserController extends Controller
                     'pincode' => 'required|digits:8',
                 ]
             );
-            if($validator->passes()){
+            if ($validator->passes()) {
                 //Update User Details
-                User::where('id',Auth::user()->id)->update(['name'=>$data['name'],'mobile'=>$data['mobile'],'city'=>$data['city'],'state'=>$data['state'],'country'=>$data['country'],'pincode'=>$data['pincode'],'address'=>$data['address']]);
+                User::where('id', Auth::user()->id)->update(['name' => $data['name'], 'mobile' => $data['mobile'], 'city' => $data['city'], 'state' => $data['state'], 'country' => $data['country'], 'pincode' => $data['pincode'], 'address' => $data['address']]);
                 //Redirect back user wuth success message
-                return response()->json(['type'=>'success','message'=>'Your contact/billing details successfully updated!']);
-            }else{
-                return response()->json(['type'=>'error','errors'=>$validator->messages()]);
+                return response()->json(['type' => 'success', 'message' => 'Your contact/billing details successfully updated!']);
+            } else {
+                return response()->json(['type' => 'error', 'errors' => $validator->messages()]);
             }
-
-        }else{
-        $countries = Country::where('status', 1)->get()->toArray();
+        } else {
+            $countries = Country::where('status', 1)->get()->toArray();
             return view('front.users.user_account')->with(compact('countries'));
         }
     }
 
-    public function forgotPassword(Request $request){
-        if($request->ajax()){
+    public function userUpdatePassword(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = $request->all();
+            // echo "<pre>"; print_r($data); die;
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    'current_password' => 'required',
+                    'new_password' => 'required|min:6',
+                    'confirm_password' => 'required|min:6|same:new_password'
+                ]
+            );
+            if ($validator->passes()) {
+
+           $current_password = $data['current_password'];
+           $checkPassword = User::where('id',Auth::user()->id)->first();
+           if(Hash::check($current_password,$checkPassword->password)) {
+            //Update User Current Password
+            $user = User::find(Auth::user()->id);
+            $user->password = bcrypt($data['new_password']);
+            $user->save();
+            //Redirect back user with success message
+                return response()->json(['type' => 'success', 'message' => 'Account password successfully updated!']);
+
+           }else{
+                    //Redirect back user wuth error message
+                    return response()->json(['type' => 'incorrect', 'message' => 'Your current password is incorrect!']);
+           }
+
+
+            //Redirect back user with success message
+                return response()->json(['type' => 'success', 'message' => 'Your contact/billing details successfully updated!']);
+            } else {
+                return response()->json(['type' => 'error', 'errors' => $validator->messages()]);
+            }
+        } else {
+            $countries = Country::where('status', 1)->get()->toArray();
+            return view('front.users.user_account')->with(compact('countries'));
+        }
+    }
+
+    public function forgotPassword(Request $request)
+    {
+        if ($request->ajax()) {
             $data = $request->all();
             // echo "<pre>"; print_r($data); die;
 
@@ -137,11 +183,11 @@ class UserController extends Controller
                     'email.exists' => 'Email does not exists!'
                 ]
             );
-            if($validator->passes()){
+            if ($validator->passes()) {
                 // Generate New Password
                 $new_password = Str::random(16);
                 //Update New Password
-                User::where('email', $data['email'])->update(['password'=>bcrypt($new_password)]);
+                User::where('email', $data['email'])->update(['password' => bcrypt($new_password)]);
                 //Get User Details
                 $userDetails = User::where('email', $data['email'])->first()->toArray();
                 //Send Email to User
@@ -151,23 +197,23 @@ class UserController extends Controller
                     'email' => $email,
                     'password' => $new_password
                 ];
-                Mail::send('emails.user_forgot_password',$messageData,function($message)use($email){
+                Mail::send('emails.user_forgot_password', $messageData, function ($message) use ($email) {
                     $message->to($email)->subject('New Password - Stack Developers');
                 });
 
                 //Show Success Message
-                return response()->json(['type'=>'success','message'=>'New Password sent to your registered email.']);
-
-            }else{
-                return response()->json(['type'=>'error','errors'=>$validator->messages()]);
-            }  
-        }else{
+                return response()->json(['type' => 'success', 'message' => 'New Password sent to your registered email.']);
+            } else {
+                return response()->json(['type' => 'error', 'errors' => $validator->messages()]);
+            }
+        } else {
             return view('front.users.forgot_password');
         }
     }
 
-    public function userLogin(Request $request){
-        if($request->Ajax()){
+    public function userLogin(Request $request)
+    {
+        if ($request->Ajax()) {
             $data = $request->all();
             // echo "<pre>"; print_r($data); die;
             $validator = Validator::make(
@@ -175,30 +221,31 @@ class UserController extends Controller
                 [
                     'email' => 'required|email|max:150|exists:users',
                     'password' => 'required|min:6',
-                ]);
-                if($validator->passes()) {
+                ]
+            );
+            if ($validator->passes()) {
                 if (Auth::attempt(['email' => $data['email'], 'password' => $data['password']])) {
 
-                    if(Auth::user()->status==0){
+                    if (Auth::user()->status == 0) {
                         Auth::logout();
-                        return response()->json(['type'=>'inactive','message'=>'Your account is not activated! Please confirm your account to activate your account.']);
+                        return response()->json(['type' => 'inactive', 'message' => 'Your account is not activated! Please confirm your account to activate your account.']);
                     }
 
                     //Update User Cart with user id
-                    if(!empty(Session::get('session_id'))){
+                    if (!empty(Session::get('session_id'))) {
                         $user_id = Auth::user()->id;
                         $session_id = Session::get('session_id');
-                        Cart::where('session_id',$session_id)->update(['user_id'=>$user_id]);
+                        Cart::where('session_id', $session_id)->update(['user_id' => $user_id]);
                     }
 
                     $redirectTo = url('cart');
                     return response()->json(['type' => 'success', 'url' => $redirectTo]);
-                }else{
-                    return response()->json(['type'=>'incorrect','message'=>'Incorrect Email or Password!']);
+                } else {
+                    return response()->json(['type' => 'incorrect', 'message' => 'Incorrect Email or Password!']);
                 }
-                }else{
-                    return response()->json(['type'=>'error','errors'=>$validator->messages()]);
-                }
+            } else {
+                return response()->json(['type' => 'error', 'errors' => $validator->messages()]);
+            }
         }
     }
     public function userLogout()
@@ -207,27 +254,27 @@ class UserController extends Controller
         return redirect('/');
     }
 
-    public function confirmAccount($code){
+    public function confirmAccount($code)
+    {
         $email = base64_decode($code);
         $userCount = User::where('email', $email)->count();
-        if($userCount>0){
-            $userDetails = User::where('email',$email)->first();
-            if($userDetails->status==1){
+        if ($userCount > 0) {
+            $userDetails = User::where('email', $email)->first();
+            if ($userDetails->status == 1) {
                 //Redirect the user to Login/Register Page with error message
-                return redirect('user/login-register')->with('error_message','Your account is already activated. You can login now.');
-            }else{
-                User::where('email',$email)->update(['status'=>1]);
+                return redirect('user/login-register')->with('error_message', 'Your account is already activated. You can login now.');
+            } else {
+                User::where('email', $email)->update(['status' => 1]);
                 //Send Welcome Email
-                $messageData = ['name'=>$userDetails->name, 'mobile'=> $userDetails->mobile,'email'=>$email];
-                Mail::send('emails.register',$messageData,function($message) use ($email){
+                $messageData = ['name' => $userDetails->name, 'mobile' => $userDetails->mobile, 'email' => $email];
+                Mail::send('emails.register', $messageData, function ($message) use ($email) {
                     $message->to($email)->subject('Welcome to Stack Developers');
                 });
 
                 //Redirect the user to Login/Register Page with success message
                 return redirect('user/login-register')->with('success_message', 'Your account is activated. You can login now.');
-
             }
-        }else{
+        } else {
             abort(404);
         }
     }

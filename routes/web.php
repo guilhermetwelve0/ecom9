@@ -120,6 +120,7 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
 
     });
 });
+
 Route::namespace('App\Http\Controllers\Front')->group(function(){
     Route::get('/','IndexController@index');
 
@@ -160,18 +161,19 @@ Route::namespace('App\Http\Controllers\Front')->group(function(){
    //Delete Cart Item
    Route::post('cart/delete','ProductsController@cartDelete');
 
-    //User Login/Register
-    Route::get('user/login-register', 'UserController@loginRegister');
+   //User Login/Register
+   Route::get('user/login-register', ['as'=>'login','uses'=>'UserController@loginRegister']);
 
-    //User Register
-    Route::post('user/register', 'UserController@userRegister');
+   //User Register
+   Route::post('user/register', 'UserController@userRegister');
 
-    //User Update Password
-    Route::post('user/update-password', 'UserController@userUpdatePassword');
 
-    //User Account
-    Route::match(['GET', 'POST'], 'user/account', 'UserController@userAccount');
-
+   Route::group(['middleware'=>['auth']],function(){
+       //User Account
+       Route::match(['GET', 'POST'], 'user/account', 'UserController@userAccount');
+       //User Update Password
+       Route::post('user/update-password', 'UserController@userUpdatePassword');
+   });
     //User Login
     Route::post('user/login', 'UserController@userLogin');
 
