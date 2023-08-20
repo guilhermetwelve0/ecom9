@@ -1,5 +1,6 @@
 <?php
 $getCartItems = getCartItems();
+
 use App\Models\Product; ?>
 <!-- Mini Cart -->
 <div class="mini-cart-wrapper">
@@ -34,3 +35,8 @@ use App\Models\Product; ?>
         </div>
     </div>
 </div>
+<script>
+    $('#mini-cart-close').on('click', function() {
+        $('.mini-cart-wrapper').removeClass('mini-cart-open');
+    });
+</script>

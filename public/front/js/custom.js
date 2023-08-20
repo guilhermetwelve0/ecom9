@@ -56,6 +56,7 @@ $(document).ready(function () {
           alert(resp.message);
         }
         $("#appendCartItems").html(resp.view);
+        $("#appendHeaderCartItems").html(resp.headerview);
       }, error: function () {
         alert("Error");
       }
@@ -77,6 +78,7 @@ $(document).ready(function () {
         success: function (resp) {
           $(".totalCartItems").html(resp.totalCartItems);
           $("#appendCartItems").html(resp.view);
+          $("#appendHeaderCartItems").html(resp.headerview);
         }, error: function () {
           // alert("Error");
         }
