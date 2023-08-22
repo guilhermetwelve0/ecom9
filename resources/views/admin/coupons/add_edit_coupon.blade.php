@@ -73,8 +73,8 @@
                                     <span><input type="radio" name="amount_type" value="Fixed">&nbsp;Fixed&nbsp;(in INR or USD)
                             </div>
                             <div class="form-group">
-                                <label for="coupon_name">Amount</label>
-                                <input type="text" class="form-control" id="coupon_name" placeholder="Enter Product Name" name="coupon_name">
+                                <label for="amount">Amount</label>
+                                <input type="text" class="form-control" id="amount" placeholder="Enter Coupon Amount" name="amount">
                             </div>
                             <div class="form-group">
                                 <label for="categories">Select Category</label>

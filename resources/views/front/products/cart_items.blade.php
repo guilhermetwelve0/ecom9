@@ -115,9 +115,7 @@ use App\Models\Product; ?>
                 </tr>
                 <tr>
                 <tr>
-                    <td>
-                        <h3 class="calc-h3 u-s-m-b-0">Coupon Discount</h3>
-                    </td>
+                    
                     <td>
                         <span class="calc-text">Rs.0</span>
                     </td>
