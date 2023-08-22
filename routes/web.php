@@ -117,6 +117,11 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
         Route::match(['get','post'],'add-edit-banner/{id?}', 'BannersController@addEditBanner');
         Route::get('add-edit-product/{id}', [App\Http\Controllers\Admin\ProductsController::class, 'addEditProduct'])->name('admin.add.edit.product');
         Route::get('/tshirts', [ProductsController::class, 'listing']);
+        //Coupons
+        Route::get('coupons', 'CouponsController@coupons');
+        Route::post('update-coupon-status', 'CouponsController@updateCouponStatus');
+        Route::get('delete-coupon/{id}', 'CouponsController@deleteCoupon');
+        Route::match(['get', 'post'], 'add-edit-coupon/{id?}', 'CouponController@addEditCoupon');
 
     });
 });

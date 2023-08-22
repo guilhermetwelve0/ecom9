@@ -6,6 +6,7 @@ $(document).ready(function () {
     $("#products").DataTable();
     $("#banners").DataTable();
     $("#filters").DataTable();
+    $("#coupons").DataTable();
 
     // Adicionar delay de 500ms com debounce
     $(".nav-item").removeClass("active");
@@ -199,6 +200,34 @@ $(document).ready(function () {
                     );
                 } else if (resp["status"] == 1) {
                     $("#product-" + product_id).html(
+                        "<i style='font-size:25px;' class='mdi mdi-bookmark-check' status='Active'></i>"
+                    );
+                }
+            },
+            error: function () {
+                alert("Error");
+            },
+        });
+    });
+    //Update Coupon Status
+    $(document).on("click", ".updateCouponStatus", function () {
+        var status = $(this).children("i").attr("status");
+        var coupon_id = $(this).attr("coupon_id");
+        $.ajax({
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            type: "post",
+            url: "/admin/update-coupon-status",
+            data: { status: status, coupon_id: coupon_id },
+            success: function (resp) {
+                // alert(resp);
+                if (resp["status"] == 0) {
+                    $("#coupon-" + coupon_id).html(
+                        "<i style='font-size:25px;' class='mdi mdi-bookmark-outline' status='Inactive'></i>"
+                    );
+                } else if (resp["status"] == 1) {
+                    $("#coupon-" + coupon_id).html(
                         "<i style='font-size:25px;' class='mdi mdi-bookmark-check' status='Active'></i>"
                     );
                 }
@@ -410,5 +439,13 @@ $(document).ready(function () {
                 $(".loadFilters").html(resp.view);
             },
         });
+    });
+
+    //Show/Hide Coupon field for Manual/Automatic
+    $("#ManualCoupon").click(function () {
+        $("#couponField").show();
+    });
+     $("#AutomaticCoupon").click(function () {
+        $("#couponField").hide();
     });
 });
