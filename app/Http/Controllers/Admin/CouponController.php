@@ -16,7 +16,17 @@ class CouponController extends Controller
     public function coupons()
     {
         Session::put('page', 'coupons');
-        $coupons = Coupon::get()->toArray();
+        $adminType = Auth::guard('admin')->user()->type;
+        $vendor_id = Auth::guard('admin')->user()->vendor_id;
+        if ($adminType == "vendor") {
+            $vendorStatus = Auth::guard('admin')->user()->status;
+            if ($vendorStatus == 0) {
+                return redirect("admin/update-vendor-details/personal")->with('error_message', 'Your Vendor Account is not approved yet. Please make sure to fill your valid personal, business and bank details');
+            }
+            $coupons = Coupon::where('vendor_id', $vendor_id)->get()->toArray();
+        } else {
+            $coupons = Coupon::get()->toArray();
+        }
         // dd($coupons);
         return view('admin.coupons.coupons')->with(compact('coupons'));
     }
@@ -120,10 +130,11 @@ class CouponController extends Controller
             $adminType = Auth::guard('admin')->user()->type;
 
             if ($adminType == "vendor") {
-                $coupon = Auth::guard('admin')->user()->vendor_id;
+                $coupon->vendor_id = Auth::guard('admin')->user()->vendor_id;
             } else {
                 $coupon->vendor_id = 0;
             }
+
 
             $coupon->coupon_option = $data['coupon_option'];
             $coupon->coupon_code = $coupon_code;
@@ -148,6 +159,6 @@ class CouponController extends Controller
         // Get All User Emails
         $users = User::select('email')->where('status', 1)->get();
 
-        return view('admin.coupons.add_edit_coupon')->with(compact('title', 'coupon', 'categories', 'brands', 'users','selCats','selBrands','selUsers'));
+        return view('admin.coupons.add_edit_coupon')->with(compact('title', 'coupon', 'categories', 'brands', 'users', 'selCats', 'selBrands', 'selUsers'));
     }
 }

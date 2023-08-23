@@ -8,13 +8,25 @@ use App\Models\Section;
 use App\Models\User;
 use App\Models\Brand;
 use App\Models\Coupon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class CouponsController extends Controller
 {
-    public function coupons(){
+    public function coupons()
+    {
         Session::put('page', 'coupons');
-        $coupons = Coupon::get()->toArray();
+        $adminType = Auth::guard('admin')->user()->type;
+        $vendor_id = Auth::guard('admin')->user()->vendor_id;
+        if ($adminType == "vendor") {
+            $vendorStatus = Auth::guard('admin')->user()->status;
+            if ($vendorStatus == 0) {
+                return redirect("admin/update-vendor-details/personal")->with('error_message', 'Your Vendor Account is not approved yet. Please make sure to fill your valid personal, business and bank details');
+            }
+            $coupons = Coupon::where('vendor_id', $vendor_id)->get()->toArray();
+        } else {
+            $coupons = Coupon::get()->toArray();
+        }
         // dd($coupons);
         return view('admin.coupons.coupons')->with(compact('coupons'));
     }
@@ -44,20 +56,27 @@ class CouponsController extends Controller
         return redirect()->back()->with('success_message', $message);
     }
 
-    public function addEditCoupon(Request $request,$id=null) {
-        if($id=""){
+    public function addEditCoupon(Request $request, $id = null)
+    {
+        if ($id == "") {
             //Add Coupon
             $title = "Add Coupon";
             $coupon = new Coupon;
+            $selCats = array();
+            $selBrands = array();
+            $selUsers = array();
             $message = "Coupon added successfully!";
-        }else{
+        } else {
             // Update Coupon
             $title = "Edit Coupon";
             $coupon = Coupon::find($id);
+            $selCats = explode(',', $coupon['categories']);
+            $selBrands = explode(',', $coupon['brands']);
+            $selUsers = explode(',', $coupon['users']);
             $message = "Coupon updated successfully!";
         }
 
-        if($request->isMethod('post')){
+        if ($request->isMethod('post')) {
             $data = $request->all();
             // echo "<pre>";
             // print_r($data);
@@ -74,7 +93,7 @@ class CouponsController extends Controller
             $customMessages = [
                 'categories.required' => 'Select Categories',
                 'brands.required' => 'Select Brands',
-                'coupon_option.regex' => 'Select Coupon Option',
+                'coupon_option.required' => 'Select Coupon Option',
                 'coupon_type.required' => 'Select Coupon Type',
                 'amount_type.required' => 'Select Amount Type',
                 'amount.required' => 'Enter Amount ',
@@ -84,9 +103,9 @@ class CouponsController extends Controller
 
             $this->validate($request, $rules, $customMessages);
 
-            if(isset($data['categories'])){
-                $categories = implode(",",$data['categories']);
-            }else{
+            if (isset($data['categories'])) {
+                $categories = implode(",", $data['categories']);
+            } else {
                 $categories = "";
             }
 
@@ -102,24 +121,33 @@ class CouponsController extends Controller
                 $users = "";
             }
 
-            if($data['coupon_option']=="Automatic"){
-               $coupon_code = str_random(8);
-            }else{
+            if ($data['coupon_option'] == "Automatic") {
+                $coupon_code = str_random(8);
+            } else {
                 $coupon_code = $data['coupon_code'];
             }
-            $coupon->coupon_option=$data['coupon_option'];
-            $coupon->coupon_code=$coupon_code;
-            $coupon->categories=$categories;
-            $coupon->brands= $brands;
-            $coupon->users= $users;
-            $coupon->coupon_type= $data['coupon_type'];
-            $coupon->amount_type=$data['amount_type'];
-            $coupon->amount=$data['amount'];
-            $coupon->expiry_date=$data['expiry_date'];
-            $coupon->status=1;
-            $coupon->save();
-            return redirect('admin/coupons')->with('success_message',$message);
 
+            $adminType = Auth::guard('admin')->user()->type;
+
+            if ($adminType == "vendor") {
+                $coupon->vendor_id = Auth::guard('admin')->user()->vendor_id;
+            } else {
+                $coupon->vendor_id = 0;
+            }
+
+            
+            $coupon->coupon_option = $data['coupon_option'];
+            $coupon->coupon_code = $coupon_code;
+            $coupon->categories = $categories;
+            $coupon->brands = $brands;
+            $coupon->users = $users;
+            $coupon->coupon_type = $data['coupon_type'];
+            $coupon->amount_type = $data['amount_type'];
+            $coupon->amount = $data['amount'];
+            $coupon->expiry_date = $data['expiry_date'];
+            $coupon->status = 1;
+            $coupon->save();
+            return redirect('admin/coupons')->with('success_message', $message);
         }
 
         //Get Sections with Categories and Sub Categories
@@ -131,6 +159,6 @@ class CouponsController extends Controller
         // Get All User Emails
         $users = User::select('email')->where('status', 1)->get();
 
-        return view('admin.coupons.add_edit_coupon')->with(compact('title','coupon','categories','brands','users'));   
+        return view('admin.coupons.add_edit_coupon')->with(compact('title', 'coupon', 'categories', 'brands', 'users', 'selCats', 'selBrands', 'selUsers'));
     }
 }

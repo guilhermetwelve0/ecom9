@@ -12,6 +12,7 @@ use App\Models\Product;
 use App\Models\ProductsAttribute;
 use App\Models\ProductsFilter;
 use App\Models\Vendor;
+use App\Models\User;
 use App\Models\Cart;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -38,10 +39,10 @@ class ProductsController extends Controller
                 //Checking for Dynamic Filters
                 $productFilters = ProductsFilter::productFilters();
                 foreach ($productFilters as $key => $filter) {
-                //If filter is selected
-                if(isset($filter['filter_column']) && isset($data[$filter['filter_column']]) && !empty($filter['filter_column']) && !empty($data[$filter['filter_column']])){
+                    //If filter is selected
+                    if (isset($filter['filter_column']) && isset($data[$filter['filter_column']]) && !empty($filter['filter_column']) && !empty($data[$filter['filter_column']])) {
                         $categoryProducts->whereIn($filter['filter_column'], $data[$filter['filter_column']]);
-                }
+                    }
                 }
                 //checking for Sort
                 if (isset($_GET['sort']) && !empty($_GET['sort'])) {
@@ -60,25 +61,25 @@ class ProductsController extends Controller
 
                 //checking for Size
                 if (isset($data['size']) && !empty($data['size'])) {
-                 $productIds = ProductsAttribute::select('product_id')->whereIn('size',$data['size'])->pluck('product_id')->toArray();
-                 $categoryProducts->whereIn('products.id',$productIds);
+                    $productIds = ProductsAttribute::select('product_id')->whereIn('size', $data['size'])->pluck('product_id')->toArray();
+                    $categoryProducts->whereIn('products.id', $productIds);
                 }
 
                 //checking for Color
                 if (isset($data['color']) && !empty($data['color'])) {
-                    $productIds = Product::select('id')->whereIn('product_color',$data['color'])->pluck('id')->toArray();
+                    $productIds = Product::select('id')->whereIn('product_color', $data['color'])->pluck('id')->toArray();
                     $categoryProducts->whereIn('products.id', $productIds);
                 }
 
                 //checking for Price
                 if (isset($data['price']) && !empty($data['price'])) {
-                  foreach($data['price'] as $key => $price) {
-                   $priceArr = explode("-",$price);
-                   $productIds[] = Product::select('id')->whereBetween('product_price',[$priceArr[0],$priceArr[1]])->pluck('id')->toArray();
-                  }
-                  $productIds = call_user_func_array('array_merge',$productIds);
-                //   echo "<pre>"; print_r($productIds); die;
-                $categoryProducts->whereIn('products.id',$productIds);
+                    foreach ($data['price'] as $key => $price) {
+                        $priceArr = explode("-", $price);
+                        $productIds[] = Product::select('id')->whereBetween('product_price', [$priceArr[0], $priceArr[1]])->pluck('id')->toArray();
+                    }
+                    $productIds = call_user_func_array('array_merge', $productIds);
+                    //   echo "<pre>"; print_r($productIds); die;
+                    $categoryProducts->whereIn('products.id', $productIds);
                 }
 
                 //checking for Brand
@@ -127,41 +128,43 @@ class ProductsController extends Controller
             }
         }
     }
-   public function vendorListing($vendorid){
-    //Get Vendor Shop Name
-    $getVendorShop = Vendor::getVendorShop($vendorid);
-    //Get Vendor Products
-    $vendorProducts = Product::with('brand')->where('vendor_id',$vendorid)->where('status',1);
-    $vendorProducts = $vendorProducts->paginate(30);
-    return view('front.products.vendor_listing')->with(compact('getVendorShop','vendorProducts'));
-   }
+    public function vendorListing($vendorid)
+    {
+        //Get Vendor Shop Name
+        $getVendorShop = Vendor::getVendorShop($vendorid);
+        //Get Vendor Products
+        $vendorProducts = Product::with('brand')->where('vendor_id', $vendorid)->where('status', 1);
+        $vendorProducts = $vendorProducts->paginate(30);
+        return view('front.products.vendor_listing')->with(compact('getVendorShop', 'vendorProducts'));
+    }
 
-    public function detail($id){
-        $productDetails = Product::with(['section','category','brand','attributes'=>function($query){
-             $query->where('stock','>',0)->where('status',1);
-        },'images','vendor'])->find($id)->toArray();
+    public function detail($id)
+    {
+        $productDetails = Product::with(['section', 'category', 'brand', 'attributes' => function ($query) {
+            $query->where('stock', '>', 0)->where('status', 1);
+        }, 'images', 'vendor'])->find($id)->toArray();
         $categoryDetails = Category::categoryDetails($productDetails['category']['url']);
         // dd($productDetails);
         //Get Similar Products
-        $similarProducts = Product::with('brand')->where('category_id',$productDetails['category']['id'])->where('id','!=',$id)->limit(4)->inRandomOrder()->get()->toArray();
+        $similarProducts = Product::with('brand')->where('category_id', $productDetails['category']['id'])->where('id', '!=', $id)->limit(4)->inRandomOrder()->get()->toArray();
         // dd($similarProducts);
         //Set Session for Recently Viewed Products
-        if(empty(Session::get('session_id'))){
+        if (empty(Session::get('session_id'))) {
             $session_id = md5(uniqid(mt_rand(), true));
-        }else{
+        } else {
             $session_id = Session::get('session_id');
         }
 
-        Session::put('session_id',$session_id);
+        Session::put('session_id', $session_id);
 
         // Insert product in table if not already exists
-        $countRecentlyViewedProducts = DB::table('recently_viewed_products')->where(['product_id'=>$id,'session_id'=>$session_id])->count();
-        if($countRecentlyViewedProducts==0){
+        $countRecentlyViewedProducts = DB::table('recently_viewed_products')->where(['product_id' => $id, 'session_id' => $session_id])->count();
+        if ($countRecentlyViewedProducts == 0) {
             DB::table('recently_viewed_products')->insert(['product_id' => $id, 'session_id' => $session_id]);
         }
 
         //Get Recently Viewed Products Ids
-    $recentProductsIds = DB::table('recently_viewed_products')->select('product_id')->where('product_id','!=',$id)->where('session_id',$session_id)->inRandomOrder()->get()->take(4)->pluck('product_id');
+        $recentProductsIds = DB::table('recently_viewed_products')->select('product_id')->where('product_id', '!=', $id)->where('session_id', $session_id)->inRandomOrder()->get()->take(4)->pluck('product_id');
         // dd($recentProductsIds);
 
         //Get Recently Viewed Products
@@ -170,57 +173,60 @@ class ProductsController extends Controller
 
         //Get Group Products (Product Colors)
         $groupProducts = array();
-        if(!empty($productDetails['group_code'])){
-            $groupProducts = Product::select('id','product_image')->where('id','!=',$id)->where([
-            'group_code'=>$productDetails['group_code'],'status'=>1])->get()->toArray();
+        if (!empty($productDetails['group_code'])) {
+            $groupProducts = Product::select('id', 'product_image')->where('id', '!=', $id)->where([
+                'group_code' => $productDetails['group_code'], 'status' => 1
+            ])->get()->toArray();
             // dd($groupProducts);
         }
-        
 
-        $totalStock = ProductsAttribute::where('product_id',$id)->sum('stock');
-        return view('front.products.detail')->with(compact('productDetails','categoryDetails','totalStock','similarProducts','recentlyViewedProducts'));
+
+        $totalStock = ProductsAttribute::where('product_id', $id)->sum('stock');
+        return view('front.products.detail')->with(compact('productDetails', 'categoryDetails', 'totalStock', 'similarProducts', 'recentlyViewedProducts'));
     }
 
-    public function getProductPrice(Request $request){
-        if($request->ajax()){
+    public function getProductPrice(Request $request)
+    {
+        if ($request->ajax()) {
             $data = $request->all();
             //  echo "<pre>"; print_r($data); die;
-            $getDiscountedAttrPrice = Product::getDiscountAttributePrice($data['product_id'],$data['size']);
+            $getDiscountedAttrPrice = Product::getDiscountAttributePrice($data['product_id'], $data['size']);
             return $getDiscountedAttrPrice;
         }
     }
 
-    public function cartAdd(Request $request){
-        if($request->isMethod('post')){
+    public function cartAdd(Request $request)
+    {
+        if ($request->isMethod('post')) {
             $data = $request->all();
             // echo "<pre>"; print_r($data); die;
 
             //Check Product Stock is available or not
-            $getProductStock = ProductsAttribute::getProductStock($data['product_id'],$data['size']);
-            if($getProductStock<$data['quantity']){
-                return redirect()->back()->with('error_message','Required Quantity is not available!');
+            $getProductStock = ProductsAttribute::getProductStock($data['product_id'], $data['size']);
+            if ($getProductStock < $data['quantity']) {
+                return redirect()->back()->with('error_message', 'Required Quantity is not available!');
             }
 
             //Generate Session Id if not exists
             $session_id = Session::get('session_id');
-            if(empty($session_id)){
+            if (empty($session_id)) {
                 $session_id = Session::getId();
-                Session::put('session_id',$session_id);
+                Session::put('session_id', $session_id);
             }
 
             //Check Product if already exists in the User Cart
-            if(Auth::check()){
-             //User is logged in
-            $user_id = Auth::user()->id;
-            $countProducts = Cart::where(['product_id'=>$data['product_id'],'size'=>$data['size'],'user_id'=>$user_id])->count();
-            }else{
-            //User is not logged in
-            $user_id = 0;
-            $countProducts = Cart::where(['product_id' => $data['product_id'],'size'=>$data['size'],'session_id'=>$session_id])->count();
+            if (Auth::check()) {
+                //User is logged in
+                $user_id = Auth::user()->id;
+                $countProducts = Cart::where(['product_id' => $data['product_id'], 'size' => $data['size'], 'user_id' => $user_id])->count();
+            } else {
+                //User is not logged in
+                $user_id = 0;
+                $countProducts = Cart::where(['product_id' => $data['product_id'], 'size' => $data['size'], 'session_id' => $session_id])->count();
             }
 
-            if($countProducts>0){
-                return redirect()->back()->with('error_message','Product already exists in Cart!');
+            if ($countProducts > 0) {
+                return redirect()->back()->with('error_message', 'Product already exists in Cart!');
             }
 
             // Save Product in carts table
@@ -231,20 +237,21 @@ class ProductsController extends Controller
             $item->size = $data['size'];
             $item->quantity = $data['quantity'];
             $item->save();
-            return redirect()->back()->with('success_message','Product has been added in Cart! <a  style="text-decoration:underline !important" href="/cart">View Cart</a>');
-  
+            return redirect()->back()->with('success_message', 'Product has been added in Cart! <a  style="text-decoration:underline !important" href="/cart">View Cart</a>');
         }
     }
 
-    public function cart(){
+    public function cart()
+    {
         $getCartItems = Cart::getCartItems();
-        
+
         // dd($getCartItems);
         return view('front.products.cart')->with(compact('getCartItems'));
     }
 
-    public function cartUpdate(Request $request){
-        if($request->ajax()){
+    public function cartUpdate(Request $request)
+    {
+        if ($request->ajax()) {
             $data = $request->all();
             // echo "<pre>"; print_r($data); die;
 
@@ -252,48 +259,49 @@ class ProductsController extends Controller
             $cartDetails = Cart::find($data['cartid']);
 
             // Get Available Product Stock
-            $availableStock = ProductsAttribute::select('stock')->where(['product_id'=>$cartDetails['product_id'],'size'=>$cartDetails['size']])->first()->toArray();
+            $availableStock = ProductsAttribute::select('stock')->where(['product_id' => $cartDetails['product_id'], 'size' => $cartDetails['size']])->first()->toArray();
 
             // echo "<pre>"; print_r($availableStock); die;
 
             // Check if desired Stock from user is available
-            if($data['qty'] >$availableStock['stock']){
+            if ($data['qty'] > $availableStock['stock']) {
                 $getCartItems = Cart::getCartItems();
                 return response()->json([
                     'status' => false,
                     'message' => 'Product Stock is not available',
                     'view' => (string)View::make('front.products.cart_items')->with(compact('getCartItems')),
                     'headerview' => (string)View::make('front.layout.header_cart_items')->with(compact('getCartItems'))
-                ]); 
+                ]);
             }
 
             // Check if product size is available
-            $availableSize = ProductsAttribute::where(['product_id' => $cartDetails['product_id'], 'size' => $cartDetails['size'],'status'=>1])->count();
-            if($availableSize==0){
+            $availableSize = ProductsAttribute::where(['product_id' => $cartDetails['product_id'], 'size' => $cartDetails['size'], 'status' => 1])->count();
+            if ($availableSize == 0) {
                 $getCartItems = Cart::getCartItems();
                 return response()->json([
                     'status' => false,
                     'message' => 'Product Size is not available. Please remove this Product and choose another one!',
                     'view' => (string)View::make('front.products.cart_items')->with(compact('getCartItems')),
                     'headerview' => (string)View::make('front.layout.header_cart_items')->with(compact('getCartItems'))
-                ]); 
+                ]);
             }
 
             // Update the Qty
-            Cart::where('id', $data['cartid'])->update(['quantity'=>$data['qty']]);
+            Cart::where('id', $data['cartid'])->update(['quantity' => $data['qty']]);
             $getCartItems = Cart::getCartItems();
             $totalCartItems = totalCartItems();
             return response()->json([
-                'status'=>true,
-                'totalCartItems'=>$totalCartItems,
-                'view'=>(String)View::make('front.products.cart_items')->with(compact('getCartItems')),
-                'headerview'=>(String)View::make('front.layout.header_cart_items')->with(compact('getCartItems'))
+                'status' => true,
+                'totalCartItems' => $totalCartItems,
+                'view' => (string)View::make('front.products.cart_items')->with(compact('getCartItems')),
+                'headerview' => (string)View::make('front.layout.header_cart_items')->with(compact('getCartItems'))
             ]);
         }
     }
 
-    public function cartDelete(Request $request){
-        if($request->ajax()){
+    public function cartDelete(Request $request)
+    {
+        if ($request->ajax()) {
             $data = $request->all();
             // echo "<pre>"; print_r($data); die;
             Cart::where('id', $data['cartid'])->delete();
@@ -303,56 +311,91 @@ class ProductsController extends Controller
                 'totalCartItems' => $totalCartItems,
                 'view' => (string)View::make('front.products.cart_items')->with(compact('getCartItems')),
                 'headerview' => (string)View::make('front.layout.header_cart_items')->with(compact('getCartItems'))
-                
+
             ]);
         }
     }
-    public function applyCoupon(Request $request){
-        if($request->ajax()){
+    public function applyCoupon(Request $request)
+    {
+        if ($request->ajax()) {
             $data = $request->all();
             // echo "<pre>"; print_r($data); die;
             $getCartItems = Cart::getCartItems();
             $totalCartItems = totalCartItems();
-            $couponCount = Coupon::where('coupon_code',$data['code'])->count();
-            if($couponCount==0){
+            $couponCount = Coupon::where('coupon_code', $data['code'])->count();
+            if ($couponCount == 0) {
                 return response()->json([
-                    'status'=>'false',
+                    'status' => 'false',
                     'totalCartItems' => $totalCartItems,
                     'message' => 'This coupon is not valid!',
                     'view' => (string)View::make('front.products.cart_items')->with(compact('getCartItems')),
                     'headerview' => (string)View::make('front.layout.header_cart_items')->with(compact('getCartItems'))
 
                 ]);
-            }else{
+            } else {
                 //Check for other conditions
 
                 // Get Coupon Details
                 $couponDetails = Coupon::where('coupon_code', $data['code'])->first();
 
                 // Check if coupon is active
-                if($couponDetails->status==0){
+                if ($couponDetails->status == 0) {
                     $message = "The coupon is not active!";
                 }
 
                 //Check if coupon is expired
                 $expiry_date = $couponDetails->expiry_date;
                 $current_date = date('Y-m-d');
-                if($expiry_date < $current_date){
+                if ($expiry_date < $current_date) {
                     $message = "The coupon is expired!";
                 }
 
                 // Check if coupon is from selected categories
-                // Get all selected categories from coupon
-                $catArr = explode(',',$couponDetails->categories);
+                // Get all selected categories from coupon and convert to array
+                $catArr = explode(',', $couponDetails->categories);
 
+                //Check if any cart item not belong to coupon category
                 foreach ($getCartItems as $key => $item) {
-                    if(){
-                        
+                    if (!in_array($item['product']['category_id'], $catArr)) {
+                        $message = "This coupon is not for one of the selected products.";
                     }
                 }
 
+                //Check if coupon is from selected users
+                // Get all selected users from coupon and convert to array
+                if (isset($couponDetails->users) && !empty($couponDetails->users)) {
+                    $usersArr = explode(",", $couponDetails->users);
+                    if (count($usersArr)) {
+                        //Get User Id's of all selected users
+                        foreach ($usersArr as $key => $user) {
+                            $getUserId = User::select('id')->where('email', $user)->first()->toArray();
+                            $usersId[] = $getUserId;
+                        }
+
+                        //Check if any cart item not belong to coupon user
+                        foreach ($getCartItems as $key => $item) {
+
+                            if (!in_array($item['user_id'], $usersId)) {
+                                $message = "This coupon is not for you. Try with valid coupon code!";
+                            }
+                        }
+                    }
+                }
+
+                if ($couponDetails->vendor_id > 0) {
+                    $productIds = Product::select('id')->where('vendor_id', $couponDetails->vendor_id)->pluck('id')->toArray();
+                    //Check if coupon belongs to Vendor Products
+                    foreach ($getCartItems as $key => $item) {
+                        if (!in_array($item['product']['id'], $productIds)) {
+                            $message = "This coupon is not for you. Try with valid coupon code!";
+                        }
+                    }
+                }
+
+
+
                 // If error message is there
-                if(isset($message)){
+                if (isset($message)) {
                     return response()->json([
                         'status' => 'false',
                         'totalCartItems' => $totalCartItems,
@@ -361,7 +404,6 @@ class ProductsController extends Controller
                         'headerview' => (string)View::make('front.layout.header_cart_items')->with(compact('getCartItems'))
                     ]);
                 }
-                
             }
         }
     }
