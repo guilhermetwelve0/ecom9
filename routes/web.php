@@ -178,6 +178,8 @@ Route::namespace('App\Http\Controllers\Front')->group(function(){
        Route::match(['GET', 'POST'], 'user/account', 'UserController@userAccount');
        //User Update Password
        Route::post('user/update-password', 'UserController@userUpdatePassword');
+       //Apply Coupon
+       Route::post('/apply-coupon','ProductsController@applyCoupon');
    });
     //User Login
     Route::post('user/login', 'UserController@userLogin');

@@ -84,9 +84,11 @@ use App\Models\Product; ?>
     <div class="coupon-area">
         <h6>Enter your coupon code if you have one.</h6>
         <div class="coupon-field">
-            <label class="sr-only" for="coupon-code">Apply Coupon</label>
-            <input id="coupon-code" type="text" class="text-field" placeholder="Coupon Code">
-            <button type="submit" class="button">Apply Coupon</button>
+            <form id="ApplyCoupon" method="post" action="javascript:void(0);" @if(Auth::check()) user="1" @endif>@csrf
+                <label class="sr-only" for="coupon-code">Apply Coupon</label>
+                <input id="code" name="code" type="text" class="text-field" placeholder="Enter Coupon Code">
+                <button type="submit" class="button">Apply Coupon</button>
+            </form>
         </div>
     </div>
     <div class="button-area">
@@ -101,23 +103,44 @@ use App\Models\Product; ?>
         <table>
             <thead>
                 <tr>
-                    <th colspan="2">Cart Totals</th>
+                    <th colspan="2">Cart Total</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
+                    @php
+                    $subTotalWithoutDiscount = 0; // Inicializa o sub total sem desconto
+                    @endphp
+                    @foreach ($getCartItems as $item)
+                    <?php
+                    $getDiscountAttributePrice = Product::getDiscountAttributePrice($item['product_id'], $item['size']);
+                    $subTotalWithoutDiscount += $item['quantity'] * $getDiscountAttributePrice['product_price'];
+                    ?>
+                    @endforeach
                     <td>
                         <h3 class="calc-h3 u-s-m-b-0">Sub Total</h3>
                     </td>
                     <td>
-                        <span class="calc-text">Rs.{{$total_price}}</span>
+                        <span class="calc-text">Rs.{{$subTotalWithoutDiscount}}</span>
                     </td>
                 </tr>
                 <tr>
                 <tr>
-                    
+                    @php
+                    $totalDiscount = 0;
+                    @endphp
+                    @foreach ($getCartItems as $item)
+                    @php
+                    $getDiscountAttributePrice = Product::getDiscountAttributePrice($item['product_id'], $item['size']);
+                    $productTotalDiscount = ($getDiscountAttributePrice['product_price'] - $getDiscountAttributePrice['final_price']) * $item['quantity'];
+                    $totalDiscount += $productTotalDiscount;
+                    @endphp
+                    @endforeach
                     <td>
-                        <span class="calc-text">Rs.0</span>
+                        <h3 class="calc-h3 u-s-m-b-0">Coupon Discount</h3>
+                    </td>
+                    <td>
+                        <span class="calc-text">Rs. {{ number_format($totalDiscount) }}</span>
                     </td>
                 </tr>
                 <tr>

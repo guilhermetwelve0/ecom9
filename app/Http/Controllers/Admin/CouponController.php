@@ -48,15 +48,21 @@ class CouponController extends Controller
 
     public function addEditCoupon(Request $request, $id = null)
     {
-        if ($id=="") {
+        if ($id == "") {
             //Add Coupon
             $title = "Add Coupon";
             $coupon = new Coupon;
+            $selCats = array();
+            $selBrands = array();
+            $selUsers = array();
             $message = "Coupon added successfully!";
         } else {
             // Update Coupon
             $title = "Edit Coupon";
             $coupon = Coupon::find($id);
+            $selCats = explode(',', $coupon['categories']);
+            $selBrands = explode(',', $coupon['brands']);
+            $selUsers = explode(',', $coupon['users']);
             $message = "Coupon updated successfully!";
         }
 
@@ -113,10 +119,10 @@ class CouponController extends Controller
 
             $adminType = Auth::guard('admin')->user()->type;
 
-            if($adminType == "vendor"){
+            if ($adminType == "vendor") {
                 $coupon = Auth::guard('admin')->user()->vendor_id;
-            }else{
-                $coupon -> vendor_id = 0;
+            } else {
+                $coupon->vendor_id = 0;
             }
 
             $coupon->coupon_option = $data['coupon_option'];
@@ -142,6 +148,6 @@ class CouponController extends Controller
         // Get All User Emails
         $users = User::select('email')->where('status', 1)->get();
 
-        return view('admin.coupons.add_edit_coupon')->with(compact('title', 'coupon', 'categories', 'brands', 'users'));
+        return view('admin.coupons.add_edit_coupon')->with(compact('title', 'coupon', 'categories', 'brands', 'users','selCats','selBrands','selUsers'));
     }
 }

@@ -401,6 +401,7 @@ $(document).ready(function () {
             },
         });
     });
+
     //Products Attributes Add/Remove Script
     var maxField = 10; //Input fields increment limitation
     var addButton = $(".add_button"); //Add button selector

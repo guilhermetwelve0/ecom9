@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use App\Http\Controllers\Controller;
+use App\Models\Coupon;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Product;
@@ -237,6 +238,7 @@ class ProductsController extends Controller
 
     public function cart(){
         $getCartItems = Cart::getCartItems();
+        
         // dd($getCartItems);
         return view('front.products.cart')->with(compact('getCartItems'));
     }
@@ -303,6 +305,64 @@ class ProductsController extends Controller
                 'headerview' => (string)View::make('front.layout.header_cart_items')->with(compact('getCartItems'))
                 
             ]);
+        }
+    }
+    public function applyCoupon(Request $request){
+        if($request->ajax()){
+            $data = $request->all();
+            // echo "<pre>"; print_r($data); die;
+            $getCartItems = Cart::getCartItems();
+            $totalCartItems = totalCartItems();
+            $couponCount = Coupon::where('coupon_code',$data['code'])->count();
+            if($couponCount==0){
+                return response()->json([
+                    'status'=>'false',
+                    'totalCartItems' => $totalCartItems,
+                    'message' => 'This coupon is not valid!',
+                    'view' => (string)View::make('front.products.cart_items')->with(compact('getCartItems')),
+                    'headerview' => (string)View::make('front.layout.header_cart_items')->with(compact('getCartItems'))
+
+                ]);
+            }else{
+                //Check for other conditions
+
+                // Get Coupon Details
+                $couponDetails = Coupon::where('coupon_code', $data['code'])->first();
+
+                // Check if coupon is active
+                if($couponDetails->status==0){
+                    $message = "The coupon is not active!";
+                }
+
+                //Check if coupon is expired
+                $expiry_date = $couponDetails->expiry_date;
+                $current_date = date('Y-m-d');
+                if($expiry_date < $current_date){
+                    $message = "The coupon is expired!";
+                }
+
+                // Check if coupon is from selected categories
+                // Get all selected categories from coupon
+                $catArr = explode(',',$couponDetails->categories);
+
+                foreach ($getCartItems as $key => $item) {
+                    if(){
+                        
+                    }
+                }
+
+                // If error message is there
+                if(isset($message)){
+                    return response()->json([
+                        'status' => 'false',
+                        'totalCartItems' => $totalCartItems,
+                        'message' => $message,
+                        'view' => (string)View::make('front.products.cart_items')->with(compact('getCartItems')),
+                        'headerview' => (string)View::make('front.layout.header_cart_items')->with(compact('getCartItems'))
+                    ]);
+                }
+                
+            }
         }
     }
 }
