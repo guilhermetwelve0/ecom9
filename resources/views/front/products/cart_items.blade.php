@@ -137,7 +137,7 @@ use App\Models\Product; ?>
                     @endphp
                     @endforeach
                     <td>
-                        <h3 class="calc-h3 u-s-m-b-0">Coupon Discount</h3>
+                        <h3 class="calc-h3 u-s-m-b-0">Products Discount</h3>
                     </td>
                     <td>
                         <span class="calc-text">Rs. {{ number_format($totalDiscount) }}</span>
@@ -145,10 +145,18 @@ use App\Models\Product; ?>
                 </tr>
                 <tr>
                     <td>
+                        <h3 class="calc-h3 u-s-m-b-0">Coupon Discount</h3>
+                    </td>
+                    <td>
+                        <span class="calc-text couponAmount">Rs. 0</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         <h3 class="calc-h3 u-s-m-b-0">Grand Total</h3>
                     </td>
                     <td>
-                        <span class="calc-text">Rs.{{$total_price}}</span>
+                        <span class="calc-text grand_total">Rs.{{$total_price}}</span>
                     </td>
                 </tr>
             </tbody>

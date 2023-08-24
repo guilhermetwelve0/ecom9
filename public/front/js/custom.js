@@ -290,7 +290,7 @@ $(document).ready(function () {
         if(user==1){
           //do nothing
         }else{
-          alert("Please Login to Apply Coupon!");
+          alert("Please login to apply Coupon!");
           return false;
         }
         var code = $("#code").val();
@@ -308,12 +308,19 @@ $(document).ready(function () {
           $(".totalCartItems").html(resp.totalCartItems);
           $("#appendCartItems").html(resp.view);
           $("#appendHeaderCartItems").html(resp.headerview);
+          if(resp.CouponAmount > 0){
+            $(".CouponAmount").text("Rs."+resp.CouponAmount);
+          }else{
+            $(".CouponAmount").text("Rs.0");
+          }
+          if(resp.grand_total>0){
+            $(".grand_total").text("Rs."+resp.grand_total);
+          }
           },error:function(){
             alert("Error");
           }
         })
     });
-    
 });
 
 

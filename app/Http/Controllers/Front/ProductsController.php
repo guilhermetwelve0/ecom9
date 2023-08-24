@@ -319,18 +319,17 @@ class ProductsController extends Controller
     {
         if ($request->ajax()) {
             $data = $request->all();
-            // echo "<pre>"; print_r($data); die;
+            // echo "<pre>"; print_r($getCartItems); die;
             $getCartItems = Cart::getCartItems();
             $totalCartItems = totalCartItems();
             $couponCount = Coupon::where('coupon_code', $data['code'])->count();
             if ($couponCount == 0) {
                 return response()->json([
-                    'status' => 'false',
+                    'status' => false,
                     'totalCartItems' => $totalCartItems,
                     'message' => 'This coupon is not valid!',
                     'view' => (string)View::make('front.products.cart_items')->with(compact('getCartItems')),
                     'headerview' => (string)View::make('front.layout.header_cart_items')->with(compact('getCartItems'))
-
                 ]);
             } else {
                 //Check for other conditions
@@ -355,10 +354,14 @@ class ProductsController extends Controller
                 $catArr = explode(',', $couponDetails->categories);
 
                 //Check if any cart item not belong to coupon category
+                $total_amount = 0;
                 foreach ($getCartItems as $key => $item) {
                     if (!in_array($item['product']['category_id'], $catArr)) {
                         $message = "This coupon is not for one of the selected products.";
                     }
+                    $attrPrice = Product::getDiscountAttributePrice($item['product_id'],$item['size']);
+                    // echo "<pre>"; print_r($attrPrice); die;
+                    $total_amount = $total_amount + ($attrPrice['final_price']*$item['quantity']);
                 }
 
                 //Check if coupon is from selected users
@@ -374,7 +377,6 @@ class ProductsController extends Controller
 
                         //Check if any cart item not belong to coupon user
                         foreach ($getCartItems as $key => $item) {
-
                             if (!in_array($item['user_id'], $usersId)) {
                                 $message = "This coupon is not for you. Try with valid coupon code!";
                             }
@@ -397,8 +399,35 @@ class ProductsController extends Controller
                 // If error message is there
                 if (isset($message)) {
                     return response()->json([
-                        'status' => 'false',
+                        'status' => false,
                         'totalCartItems' => $totalCartItems,
+                        'message' => $message,
+                        'view' => (string)View::make('front.products.cart_items')->with(compact('getCartItems')),
+                        'headerview' => (string)View::make('front.layout.header_cart_items')->with(compact('getCartItems'))
+                    ]);
+                }else{
+                    //Coupon code is correct
+
+                    //Check if Coupon Amount type is Fixed or Percentage
+                    if($couponDetails->amount_type=="Fixed"){
+                        $couponAmount = $couponDetails->amount;
+                    }else{
+                        $couponAmount = $total_amount * ($couponDetails->amount/100);
+                    }
+
+                    $grand_total = $total_amount - $couponAmount;
+
+                    // Add Coupon Code & Amount in Session Variables
+                    Session::put('couponAmount',$couponAmount);
+                    Session::put('couponCode',$data['code']);
+
+                    $message = "Coupon Code sucessfully applied. You are availing discount!";
+
+                    return response()->json([
+                        'status' => true,
+                        'totalCartItems' => $totalCartItems,
+                        'couponAmount' => $couponAmount,
+                        'grand_total' => $grand_total,
                         'message' => $message,
                         'view' => (string)View::make('front.products.cart_items')->with(compact('getCartItems')),
                         'headerview' => (string)View::make('front.layout.header_cart_items')->with(compact('getCartItems'))
