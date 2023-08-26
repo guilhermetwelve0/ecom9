@@ -6,11 +6,10 @@
                                     <div class="col-lg-12 grid-margin stretch-card">
                                         <div class="card">
                                             <div class="card-body">
-                                                <h4 class="card-title">Categories</h4>
+                                                <h4 class="card-title">Users</h4>
                                                 <!-- <p class="card-description">
                             Add class <code>.table-bordered</code>
                         </p> -->
-                                                <a style="max-width: 150px; float: right; display: inline-block;" href="{{url('admin/add-edit-category')}}" class="btn btn-block btn-primary">Add Category</a>
                                                 @if(Session::has('success_message'))
                                                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                                                     <strong>Success:</strong> {{Session::get('success_message')}}
@@ -20,68 +19,79 @@
                                                 </div>
                                                 @endif
                                                 <div class="table-responsive pt-3">
-                                                    <table id="categories" class="table table-bordered">
+                                                    <table id="users" class="table table-bordered">
                                                         <thead>
                                                             <tr>
                                                                 <th>
                                                                     ID
                                                                 </th>
                                                                 <th>
-                                                                    Category
+                                                                    Name
                                                                 </th>
                                                                 <th>
-                                                                    Parent Category
+                                                                    Address
                                                                 </th>
                                                                 <th>
-                                                                    Section
+                                                                    City
                                                                 </th>
                                                                 <th>
-                                                                    URL
+                                                                    State
+                                                                </th>
+                                                                <th>
+                                                                    Country
+                                                                </th>
+                                                                <th>
+                                                                    Pincode
+                                                                </th>
+                                                                <th>
+                                                                    Mobile
+                                                                </th>
+                                                                <th>
+                                                                    Email
                                                                 </th>
                                                                 <th>
                                                                     Status
                                                                 </th>
-                                                                <th>
-                                                                    Actions
-                                                                </th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            @foreach($categories as $category)
-                                                            @if(isset($category['parentcategory']['category_name'])&&!empty($category['parentcategory']['category_name']))
-                                                            @php $parent_category = $category['parentcategory']['category_name']; @endphp
-                                                            @else
-                                                            @php $parent_category = "Root"; @endphp
-                                                            @endif
+                                                            @foreach($users as $user)
                                                             <tr>
                                                                 <td>
-                                                                    {{$category['id']}}
+                                                                    {{$user['id']}}
                                                                 </td>
                                                                 <td>
-                                                                    {{$category['category_name']}}
+                                                                    {{$user['name']}}
                                                                 </td>
                                                                 <td>
-                                                                    {{ $parent_category }}
+                                                                    {{$user['address']}}
                                                                 </td>
                                                                 <td>
-                                                                    {{$category['section']['name']}}
+                                                                    {{$user['city']}}
                                                                 </td>
                                                                 <td>
-                                                                    {{$category['url']}}
+                                                                    {{$user['state']}}
                                                                 </td>
                                                                 <td>
-                                                                    @if($category['status'] ==1)
-                                                                    <a class="updateCategoryStatus" id="category-{{$category['id']}}" category_id="{{$category['id']}}" href="javascript:void(0)">
+                                                                    {{$user['country']}}
+                                                                </td>
+                                                                <td>
+                                                                    {{$user['pincode']}}
+                                                                </td>
+                                                                <td>
+                                                                    {{$user['mobile']}}
+                                                                </td>
+                                                                <td>
+                                                                    {{$user['email']}}
+                                                                </td>
+                                                                <td>
+                                                                    @if($user['status'] ==1)
+                                                                    <a class="updateUserStatus" id="user-{{$user['id']}}" user_id="{{$user['id']}}" href="javascript:void(0)">
                                                                         <i style="font-size:25px;" class="mdi mdi-bookmark-check" status="Active"></i></a>
                                                                     @else
-                                                                    <a class="updateCategoryStatus" id="category-{{$category['id']}}" category_id="{{$category['id']}}" href="javascript:void(0)">
+                                                                    <a class="updateUserStatus" id="user-{{$user['id']}}" user_id="{{$user['id']}}" href="javascript:void(0)">
                                                                         <i style="font-size:25px;" class="mdi mdi-bookmark-outline" status="Inactive"></i></a>
                                                                     @endif
-                                                                </td>
-                                                                <td>
-                                                                    <a href="{{url('admin/add-edit-category/'.$category['id'])}}"><i style="font-size:25px;" class="mdi mdi-pencil-box"></i></a>
-                                                                    <?php /* <a title="Section" class="confirmDelete" href="{{url('admin/delete-category/'.$category['id'])}}"><i style="font-size:25px;" class="mdi mdi-file-excel-box"></i></a> */ ?>
-                                                                    <a href="javascript:void(0)" class="confirmDelete" module="category" moduleid="{{$category['id']}}"><i style="font-size:25px;" class="mdi mdi-file-excel-box"></i></a>
                                                                 </td>
                                                             </tr>
                                                             @endforeach

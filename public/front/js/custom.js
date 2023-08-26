@@ -302,16 +302,17 @@ $(document).ready(function () {
           data: {code:code},
           url:'/apply-coupon',
           success:function(resp){
+            // alert(resp.couponAmount);
             if(resp.message!=""){
               alert(resp.message);
             }
           $(".totalCartItems").html(resp.totalCartItems);
           $("#appendCartItems").html(resp.view);
           $("#appendHeaderCartItems").html(resp.headerview);
-          if(resp.CouponAmount > 0){
-            $(".CouponAmount").text("Rs."+resp.CouponAmount);
+          if(resp.couponAmount > 0){
+            $(".couponAmount").text("Rs."+resp.couponAmount);
           }else{
-            $(".CouponAmount").text("Rs.0");
+            $(".couponAmount").text("Rs.0");
           }
           if(resp.grand_total>0){
             $(".grand_total").text("Rs."+resp.grand_total);

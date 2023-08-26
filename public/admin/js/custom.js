@@ -7,6 +7,7 @@ $(document).ready(function () {
     $("#banners").DataTable();
     $("#filters").DataTable();
     $("#coupons").DataTable();
+    $("#users").DataTable();
 
     // Adicionar delay de 500ms com debounce
     $(".nav-item").removeClass("active");
@@ -171,6 +172,35 @@ $(document).ready(function () {
                     );
                 } else if (resp["status"] == 1) {
                     $("#brand-" + brand_id).html(
+                        "<i style='font-size:25px;' class='mdi mdi-bookmark-check' status='Active'></i>"
+                    );
+                }
+            },
+            error: function () {
+                alert("Error");
+            },
+        });
+    });
+
+    //Update User Status
+    $(document).on("click", ".updateUserStatus", function () {
+        var status = $(this).children("i").attr("status");
+        var user_id = $(this).attr("user_id");
+        $.ajax({
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            type: "post",
+            url: "/admin/update-user-status",
+            data: { status: status, user_id: user_id },
+            success: function (resp) {
+                // alert(resp);
+                if (resp["status"] == 0) {
+                    $("#user-" + user_id).html(
+                        "<i style='font-size:25px;' class='mdi mdi-bookmark-outline' status='Inactive'></i>"
+                    );
+                } else if (resp["status"] == 1) {
+                    $("#user-" + user_id).html(
                         "<i style='font-size:25px;' class='mdi mdi-bookmark-check' status='Active'></i>"
                     );
                 }

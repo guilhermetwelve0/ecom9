@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Models\DeliveryAddress;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use App\Http\Controllers\Controller;
@@ -34,6 +35,7 @@ class ProductsController extends Controller
                 //Get Category Details
                 $categoryDetails = Category::categoryDetails($url);
                 $categoryProducts = Product::with('brand')->whereIn('category_id', $categoryDetails['catIds'])->where('status', 1);
+                
 
 
                 //Checking for Dynamic Filters
@@ -72,15 +74,26 @@ class ProductsController extends Controller
                 }
 
                 //checking for Price
+                $productsIds = array();
                 if (isset($data['price']) && !empty($data['price'])) {
                     foreach ($data['price'] as $key => $price) {
                         $priceArr = explode("-", $price);
-                        $productIds[] = Product::select('id')->whereBetween('product_price', [$priceArr[0], $priceArr[1]])->pluck('id')->toArray();
+                        if(isset($priceArr[0])&& isset($priceArr[1])){
+                            $productIds[] = Product::select('id')->whereBetween('product_price', [$priceArr[0], $priceArr[1]])->pluck('id')->toArray();
+                        }
                     }
-                    $productIds = call_user_func_array('array_merge', $productIds);
-                    //   echo "<pre>"; print_r($productIds); die;
+                    $productIds = array_unique(array_flatten( $productIds));
                     $categoryProducts->whereIn('products.id', $productIds);
                 }
+                // //checking for Price
+                // if (isset($data['price']) && !empty($data['price'])) {
+                //     foreach ($data['price'] as $key => $price) {
+                //         $priceArr = explode("-", $price);
+                //         $productIds[] = Product::select('id')->whereBetween('product_price', [$priceArr[0], $priceArr[1]])->pluck('id')->toArray();
+                //     }
+                //     $productIds = call_user_func_array('array_merge', $productIds);
+                //     $categoryProducts->whereIn('products.id', $productIds);
+                // }
 
                 //checking for Brand
                 if (isset($data['brand']) && !empty($data['brand'])) {
@@ -290,6 +303,8 @@ class ProductsController extends Controller
             Cart::where('id', $data['cartid'])->update(['quantity' => $data['qty']]);
             $getCartItems = Cart::getCartItems();
             $totalCartItems = totalCartItems();
+            Session::forget('couponAmount');
+            Session::forget('couponCode');
             return response()->json([
                 'status' => true,
                 'totalCartItems' => $totalCartItems,
@@ -302,6 +317,8 @@ class ProductsController extends Controller
     public function cartDelete(Request $request)
     {
         if ($request->ajax()) {
+            Session::forget('couponAmount');
+            Session::forget('couponCode');
             $data = $request->all();
             // echo "<pre>"; print_r($data); die;
             Cart::where('id', $data['cartid'])->delete();
@@ -319,6 +336,8 @@ class ProductsController extends Controller
     {
         if ($request->ajax()) {
             $data = $request->all();
+            Session::forget('couponAmount');
+            Session::forget('couponCode');
             // echo "<pre>"; print_r($getCartItems); die;
             $getCartItems = Cart::getCartItems();
             $totalCartItems = totalCartItems();
@@ -359,9 +378,9 @@ class ProductsController extends Controller
                     if (!in_array($item['product']['category_id'], $catArr)) {
                         $message = "This coupon is not for one of the selected products.";
                     }
-                    $attrPrice = Product::getDiscountAttributePrice($item['product_id'],$item['size']);
+                    $attrPrice = Product::getDiscountAttributePrice($item['product_id'], $item['size']);
                     // echo "<pre>"; print_r($attrPrice); die;
-                    $total_amount = $total_amount + ($attrPrice['final_price']*$item['quantity']);
+                    $total_amount = $total_amount + ($attrPrice['final_price'] * $item['quantity']);
                 }
 
                 //Check if coupon is from selected users
@@ -371,8 +390,10 @@ class ProductsController extends Controller
                     if (count($usersArr)) {
                         //Get User Id's of all selected users
                         foreach ($usersArr as $key => $user) {
-                            $getUserId = User::select('id')->where('email', $user)->first()->toArray();
-                            $usersId[] = $getUserId;
+                            $getUserId = User::select('id')->where('email', $user)->first();
+                            if ($getUserId) {
+                                $usersId[] = $getUserId->id;
+                            }
                         }
 
                         //Check if any cart item not belong to coupon user
@@ -380,9 +401,10 @@ class ProductsController extends Controller
                             if (!in_array($item['user_id'], $usersId)) {
                                 $message = "This coupon is not for you. Try with valid coupon code!";
                             }
-                        }
+                       }
                     }
                 }
+
 
                 if ($couponDetails->vendor_id > 0) {
                     $productIds = Product::select('id')->where('vendor_id', $couponDetails->vendor_id)->pluck('id')->toArray();
@@ -405,21 +427,21 @@ class ProductsController extends Controller
                         'view' => (string)View::make('front.products.cart_items')->with(compact('getCartItems')),
                         'headerview' => (string)View::make('front.layout.header_cart_items')->with(compact('getCartItems'))
                     ]);
-                }else{
+                } else {
                     //Coupon code is correct
 
                     //Check if Coupon Amount type is Fixed or Percentage
-                    if($couponDetails->amount_type=="Fixed"){
+                    if ($couponDetails->amount_type == "Fixed") {
                         $couponAmount = $couponDetails->amount;
-                    }else{
-                        $couponAmount = $total_amount * ($couponDetails->amount/100);
+                    } else {
+                        $couponAmount = $total_amount * ($couponDetails->amount / 100);
                     }
 
                     $grand_total = $total_amount - $couponAmount;
 
                     // Add Coupon Code & Amount in Session Variables
-                    Session::put('couponAmount',$couponAmount);
-                    Session::put('couponCode',$data['code']);
+                    Session::put('couponAmount', $couponAmount);
+                    Session::put('couponCode', $data['code']);
 
                     $message = "Coupon Code sucessfully applied. You are availing discount!";
 
@@ -435,5 +457,10 @@ class ProductsController extends Controller
                 }
             }
         }
+    }
+    public function checkout(){
+        $deliveryAddresses = DeliveryAddress::deliveryAddresses();
+        // dd($deliveryAddresses);
+        return view('front.products.checkout')->with(compact('deliveryAddresses'));
     }
 }

@@ -104,7 +104,7 @@ $productFilters = ProductsFilter::productFilters();
         <h3 class="title-name">Price</h3>
         <form class="facet-form" action="#" method="post">
             <div class="associate-wrapper">
-                <?php $prices = array('0-1000', '1000-2000', '2000-5000', '5000-10000', '10000-100000'); ?>
+                <?php $prices = array('0-999', '1000-1499','1500-1999', '2000-4999', '5000-9999', '10000-100000'); ?>
                 @foreach($prices as $key => $price)
                 <input type="checkbox" class="check-box price" id="price{{ $key }}" name="price[]" value="{{ $price }}">
                 <label class="label-text" for="price{{ $key }}">Rs. {{$price}}

@@ -66,6 +66,7 @@ class Product extends Model
         return array('product_price'=> $proAttrPrice['price'],'final_price'=>$final_price,'discount'=>$discount);
     }
 
+
     public static function isProductNew($product_id){
         //Get Last 3 Products
         $productIds = Product::select('id')->where('status',1)->orderby('id','Desc')->limit(3)->pluck('id');

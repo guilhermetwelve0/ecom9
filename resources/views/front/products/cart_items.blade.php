@@ -79,24 +79,6 @@ use App\Models\Product; ?>
     </table>
 </div>
 <!-- Products-List-Wrapper /- -->
-<!-- Coupon -->
-<div class="coupon-continue-checkout u-s-m-b-60">
-    <div class="coupon-area">
-        <h6>Enter your coupon code if you have one.</h6>
-        <div class="coupon-field">
-            <form id="ApplyCoupon" method="post" action="javascript:void(0);" @if(Auth::check()) user="1" @endif>@csrf
-                <label class="sr-only" for="coupon-code">Apply Coupon</label>
-                <input id="code" name="code" type="text" class="text-field" placeholder="Enter Coupon Code">
-                <button type="submit" class="button">Apply Coupon</button>
-            </form>
-        </div>
-    </div>
-    <div class="button-area">
-        <a href="shop-v1-root-category.html" class="continue">Continue Shopping</a>
-        <a href="checkout.html" class="checkout">Proceed to Checkout</a>
-    </div>
-</div>
-<!-- Coupon /- -->
 <!-- Billing -->
 <div class="calculation u-s-m-b-60">
     <div class="table-wrapper-2">
@@ -140,7 +122,7 @@ use App\Models\Product; ?>
                         <h3 class="calc-h3 u-s-m-b-0">Products Discount</h3>
                     </td>
                     <td>
-                        <span class="calc-text">Rs. {{ number_format($totalDiscount) }}</span>
+                        <span class="calc-text">Rs.{{ number_format($totalDiscount) }}</span>
                     </td>
                 </tr>
                 <tr>
@@ -148,7 +130,13 @@ use App\Models\Product; ?>
                         <h3 class="calc-h3 u-s-m-b-0">Coupon Discount</h3>
                     </td>
                     <td>
-                        <span class="calc-text couponAmount">Rs. 0</span>
+                        <span class="calc-text couponAmount">
+                            @if(Session::has('couponAmount'))
+                            Rs.{{Session::get('couponAmount')}}
+                            @else
+                            Rs.0
+                            @endif
+                        </span>
                     </td>
                 </tr>
                 <tr>
@@ -156,7 +144,7 @@ use App\Models\Product; ?>
                         <h3 class="calc-h3 u-s-m-b-0">Grand Total</h3>
                     </td>
                     <td>
-                        <span class="calc-text grand_total">Rs.{{$total_price}}</span>
+                        <span class="calc-text grand_total">Rs.{{$total_price-Session::get('couponAmount')}}</span>
                     </td>
                 </tr>
             </tbody>
