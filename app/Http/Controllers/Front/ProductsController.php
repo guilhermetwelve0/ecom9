@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Models\Country;
 use App\Models\DeliveryAddress;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
@@ -460,7 +461,8 @@ class ProductsController extends Controller
     }
     public function checkout(){
         $deliveryAddresses = DeliveryAddress::deliveryAddresses();
+        $countries = Country::where('status',1)->get()->toArray();
         // dd($deliveryAddresses);
-        return view('front.products.checkout')->with(compact('deliveryAddresses'));
+        return view('front.products.checkout')->with(compact('deliveryAddresses','countries'));
     }
 }

@@ -184,6 +184,8 @@ Route::namespace('App\Http\Controllers\Front')->group(function(){
        Route::post('/apply-coupon','ProductsController@applyCoupon');
        //Checkout
        Route::match(['GET','POST'],'/checkout','ProductsController@checkout');
+       //Get Delivery Address
+       Route::post('get-delivery-address','AddressController@getDeliveryAddress');
    });
     //User Login
     Route::post('user/login', 'UserController@userLogin');
