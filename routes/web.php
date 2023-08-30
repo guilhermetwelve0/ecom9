@@ -186,6 +186,14 @@ Route::namespace('App\Http\Controllers\Front')->group(function(){
        Route::match(['GET','POST'],'/checkout','ProductsController@checkout');
        //Get Delivery Address
        Route::post('get-delivery-address','AddressController@getDeliveryAddress');
+       //Save Delivery Address
+       Route::post('save-delivery-address','AddressController@saveDeliveryAddress');
+       //Remove Delivery Address
+       Route::post('remove-delivery-address','AddressController@removeDeliveryAddress');
+       //Thanks
+       Route::get('thanks','ProductsController@thanks');
+       //Users Orders
+       Route::get('user/orders','OrderController@orders');
    });
     //User Login
     Route::post('user/login', 'UserController@userLogin');

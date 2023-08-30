@@ -1,3 +1,7 @@
+<?php
+
+use App\Models\Product;
+use Illuminate\Support\Facades\Session; ?>
 @extends('front.layout.layout')
 @section('content')
 <!-- Page Introduction Wrapper -->
@@ -21,67 +25,17 @@
 <!-- Checkout-Page -->
 <div class="page-checkout u-s-p-t-80">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-12 col-md-12">
-                <!-- First-Accordion -->
-                <div>
-                    <div class="message-open u-s-m-b-24">
-                        Returning customer?
-                        <strong>
-                            <a class="u-c-brand" data-toggle="collapse" href="#showlogin">Click here to login
-                            </a>
-                        </strong>
-                    </div>
-                    <div class="collapse u-s-m-b-24" id="showlogin">
-                        <h6 class="collapse-h6">Welcome back! Sign in to your account.</h6>
-                        <h6 class="collapse-h6">If you have shopped with us before, please enter your details in the boxes below. If you are a new customer, please proceed to the Billing & Shipping section.</h6>
-                        <form>
-                            <div class="group-inline u-s-m-b-13">
-                                <div class="group-1 u-s-p-r-16">
-                                    <label for="user-name-email">Username or Email
-                                        <span class="astk">*</span>
-                                    </label>
-                                    <input type="text" id="user-name-email" class="text-field" placeholder="Username / Email">
-                                </div>
-                                <div class="group-2">
-                                    <label for="password">Password
-                                        <span class="astk">*</span>
-                                    </label>
-                                    <input type="text" id="password" class="text-field" placeholder="Password">
-                                </div>
-                            </div>
-                            <div class="u-s-m-b-13">
-                                <button type="submit" class="button button-outline-secondary">Login</button>
-                                <input type="checkbox" class="check-box" id="remember-me-token">
-                                <label class="label-text" for="remember-me-token">Remember me</label>
-                            </div>
-                            <div class="page-anchor">
-                                <a href="#" class="u-c-brand">Lost your password?</a>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <!-- First-Accordion /- -->
-                <!-- Second Accordion -->
-                <div>
-                    <div class="message-open u-s-m-b-24">
-                        Have a coupon?
-                        <strong>
-                            <a class="u-c-brand" data-toggle="collapse" href="#showcoupon">Click here to enter your code</a>
-                        </strong>
-                    </div>
-                    <div class="collapse u-s-m-b-24" id="showcoupon">
-                        <h6 class="collapse-h6">
-                            Enter your coupon code if you have one.
-                        </h6>
-                        <div class="coupon-field">
-                            <label class="sr-only" for="coupon-code">Apply Coupon</label>
-                            <input id="coupon-code" type="text" class="text-field" placeholder="Coupon Code">
-                            <button type="submit" class="button">Apply Coupon</button>
-                        </div>
-                    </div>
-                </div>
-                <!-- Second Accordion /- -->
+        @if(Session::has('error_message'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Error:</strong> <?php echo Session::get('error_message'); ?>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        @endif
+        <form name="checkoutForm" id="checkoutForm" action="{{url('/checkout')}}" method="post">@csrf
+            <div class="row">
+                <div class="col-lg-12 col-md-12">
                     <div class="row">
                         <!-- Billing-&-Shipping-Details -->
                         <div class="col-lg-6" id="deliveryAddresses">
@@ -100,90 +54,102 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @php $total_price = 0 @endphp
+                                        @foreach ($getCartItems as $item)
+                                        <?php $getDiscountAttributePrice = Product::getDiscountAttributePrice($item['product_id'], $item['size']);
+                                        ?>
                                         <tr>
                                             <td>
-                                                <h6 class="order-h6">Product Name</h6>
-                                                <span class="order-span-quantity">x 1</span>
+                                                <a href="{{url('product/'.$item['product_id'])}}">
+                                                    <img width="50" src="{{ asset('front/images/product_images/small/'.$item['product']['product_image'])}}" alt="Product">
+                                                    <h6 class="order-h6">{{$item['product']['product_name']}}<br>{{$item['size']}}/{{$item['product']['product_color']}}</h6>
+                                                </a>
+                                                <span class="order-span-quantity">x{{$item['quantity']}}</span>
                                             </td>
                                             <td>
-                                                <h6 class="order-h6">$100.00</h6>
+                                                <h6 class="order-h6">Rs.{{ $getDiscountAttributePrice['final_price'] * $item['quantity'] }}</h6>
                                             </td>
                                         </tr>
+                                        @php $total_price = $total_price + ($getDiscountAttributePrice['final_price'] * $item['quantity']) @endphp
+                                        @endforeach
                                         <tr>
-                                            <td>
-                                                <h6 class="order-h6">Black Rock Dress with High Jewelery Necklace</h6>
-                                                <span class="order-span-quantity">x 1</span>
-                                            </td>
-                                            <td>
-                                                <h6 class="order-h6">$100.00</h6>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <h6 class="order-h6">Xiaomi Note 2 Black Color</h6>
-                                                <span class="order-span-quantity">x 1</span>
-                                            </td>
-                                            <td>
-                                                <h6 class="order-h6">$100.00</h6>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <h6 class="order-h6">Dell Inspiron 15</h6>
-                                                <span class="order-span-quantity">x 1</span>
-                                            </td>
-                                            <td>
-                                                <h6 class="order-h6">$100.00</h6>
-                                            </td>
-                                        </tr>
-                                        <tr>
+                                            @php
+                                            $subTotalWithoutDiscount = 0; // Inicializa o sub total sem desconto
+                                            @endphp
+                                            @foreach ($getCartItems as $item)
+                                            <?php
+                                            $getDiscountAttributePrice = Product::getDiscountAttributePrice($item['product_id'], $item['size']);
+                                            $subTotalWithoutDiscount += $item['quantity'] * $getDiscountAttributePrice['product_price'];
+                                            ?>
+                                            @endforeach
                                             <td>
                                                 <h3 class="order-h3">Subtotal</h3>
                                             </td>
                                             <td>
-                                                <h3 class="order-h3">$220.00</h3>
+                                                <h3 class="order-h3">Rs.{{$subTotalWithoutDiscount}}</h3>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>
-                                                <h3 class="order-h3">Shipping</h3>
+                                                <h6 class="order-h6">Shipping Charges</h6>
                                             </td>
                                             <td>
-                                                <h3 class="order-h3">$0.00</h3>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <h3 class="order-h3">Tax</h3>
-                                            </td>
-                                            <td>
-                                                <h3 class="order-h3">$0.00</h3>
+                                                <h6 class="order-h6">Rs.0</h6>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>
-                                                <h3 class="order-h3">Total</h3>
+                                                <h6 class="order-h6">Coupon Discount</h6>
                                             </td>
                                             <td>
-                                                <h3 class="order-h3">$220.00</h3>
+                                                <h6 class="order-h6">
+                                                    @if(Session::has('couponAmount'))
+                                                    Rs.{{Session::get('couponAmount')}}
+                                                    @else
+                                                    Rs.0
+                                                    @endif
+                                                </h6>
+                                            </td>
+                                        </tr>
+                                        </tr>
+                                        <tr>
+                                            @php
+                                            $totalDiscount = 0;
+                                            @endphp
+                                            @foreach ($getCartItems as $item)
+                                            @php
+                                            $getDiscountAttributePrice = Product::getDiscountAttributePrice($item['product_id'], $item['size']);
+                                            $productTotalDiscount = ($getDiscountAttributePrice['product_price'] - $getDiscountAttributePrice['final_price']) * $item['quantity'];
+                                            $totalDiscount += $productTotalDiscount;
+                                            @endphp
+                                            @endforeach
+                                            <td>
+                                                <h6 class="order-h6">Products Discount</h6>
+                                            </td>
+                                            <td>
+                                                <h6 class="order-h6">Rs.{{ number_format($totalDiscount) }}</h6>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <h3 class="order-h3">Grand Total</h3>
+                                            </td>
+                                            <td>
+                                                <h3 class="order-h3">Rs.{{$total_price-Session::get('couponAmount')}}</h3>
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
                                 <div class="u-s-m-b-13">
-                                    <input type="radio" class="radio-box" name="payment-method" id="cash-on-delivery">
+                                    <input type="radio" class="radio-box" name="payment_gateway" id="cash-on-delivery" value="COD">
                                     <label class="label-text" for="cash-on-delivery">Cash on Delivery</label>
                                 </div>
                                 <div class="u-s-m-b-13">
-                                    <input type="radio" class="radio-box" name="payment-method" id="credit-card-stripe">
-                                    <label class="label-text" for="credit-card-stripe">Credit Card (Stripe)</label>
-                                </div>
-                                <div class="u-s-m-b-13">
-                                    <input type="radio" class="radio-box" name="payment-method" id="paypal">
+                                    <input type="radio" class="radio-box" name="payment_gateway" id="paypal" value="Paypal">
                                     <label class="label-text" for="paypal">Paypal</label>
                                 </div>
                                 <div class="u-s-m-b-13">
-                                    <input type="checkbox" class="check-box" id="accept">
+                                    <input type="checkbox" class="check-box" id="accept" name="accept" value="Yes" title="Please agree to T&C">
                                     <label class="label-text no-color" for="accept">I’ve read and accept the
                                         <a href="terms-and-conditions.html" class="u-c-brand">terms & conditions</a>
                                     </label>
@@ -193,8 +159,9 @@
                         </div>
                         <!-- Checkout /- -->
                     </div>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 <!-- Checkout-Page /- -->
