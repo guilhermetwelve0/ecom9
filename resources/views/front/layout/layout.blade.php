@@ -47,6 +47,7 @@
 
     <!-- app -->
     <div id="app">
+        @include('cookie-consent::index')
         @include('front.layout.header')
         @yield('content')
         @include('front.layout.footer')
@@ -158,6 +159,7 @@
         });
     </script>
 
+    @include('cookie-consent::index')
     @include('front.layout.scripts')
 </body>
 

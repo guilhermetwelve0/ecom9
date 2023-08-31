@@ -8,6 +8,8 @@ $(document).ready(function () {
     $("#filters").DataTable();
     $("#coupons").DataTable();
     $("#users").DataTable();
+    $('#pages').DataTable();
+    $('#orders').DataTable();
 
     // Adicionar delay de 500ms com debounce
     $(".nav-item").removeClass("active");

@@ -159,6 +159,7 @@ return [
         /*
          * Laravel Framework Service Providers...
          */
+        Spatie\CookieConsent\CookieConsentServiceProvider::class,
         Illuminate\Auth\AuthServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,

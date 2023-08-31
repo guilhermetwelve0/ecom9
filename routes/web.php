@@ -125,6 +125,14 @@ Route::prefix('/admin')->namespace('App\Http\Controllers\Admin')->group(function
         //Users
         Route::get('users', 'UserController@users');
         Route::post('update-user-status', 'UserController@updateUserStatus');
+        //CMS Pages
+        Route::get('cms-pages', 'CmsController@cmspages');
+        Route::post('update-cms-page-status', 'CmsController@updatePageStatus');
+        Route::match(['get', 'post'], 'add-edit-cms-page/{id?}', 'CmsController@addEditCmsPage');
+        Route::get('delete-page/{id}', 'CmsController@deletePage');
+        //Orders
+        Route::get('orders', 'OrderController@orders');
+        
     });
 });
 
