@@ -193,7 +193,7 @@ Route::namespace('App\Http\Controllers\Front')->group(function(){
        //Thanks
        Route::get('thanks','ProductsController@thanks');
        //Users Orders
-       Route::get('user/orders','OrderController@orders');
+       Route::get('user/orders/{id?}','OrderController@orders');
    });
     //User Login
     Route::post('user/login', 'UserController@userLogin');
