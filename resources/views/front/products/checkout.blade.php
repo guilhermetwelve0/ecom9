@@ -117,11 +117,11 @@ use Illuminate\Support\Facades\Session; ?>
                                             $totalDiscount = 0;
                                             @endphp
                                             @foreach ($getCartItems as $item)
-                                            @php
+                                            <?php
                                             $getDiscountAttributePrice = Product::getDiscountAttributePrice($item['product_id'], $item['size']);
                                             $productTotalDiscount = ($getDiscountAttributePrice['product_price'] - $getDiscountAttributePrice['final_price']) * $item['quantity'];
                                             $totalDiscount += $productTotalDiscount;
-                                            @endphp
+                                            ?>
                                             @endforeach
                                             <td>
                                                 <h6 class="order-h6">Products Discount</h6>

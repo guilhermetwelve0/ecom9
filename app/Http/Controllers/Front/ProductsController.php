@@ -21,6 +21,7 @@ use App\Models\Cart;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class ProductsController extends Controller
 {
@@ -567,6 +568,23 @@ class ProductsController extends Controller
             //Insert Order Id in Session variable
             Session::put('order_id', $order_id);
             DB::commit();
+            $orderDetails = Order::with('orders_products')->where('id',$order_id)->first()->toArray();
+            if($data['payment_gateway']=="COD"){
+                //Send Order Email
+                $email = Auth::user()->email;
+                $messageData = [
+                    'email' => $email,
+                    'name' => Auth::user()->name,
+                    'order_id' => $order_id,
+                    'orderDetails' => $orderDetails
+                ];
+                Mail::send('emails.order',$messageData,function($message)use($email){
+                    $message->to($email)->subject('Order Placed - StackDevelopers.in');
+                });
+                //Send Order SMS
+            }else{
+                echo "Prepaid payment methods coming soon";
+            }
             return redirect('thanks');
         }
 
