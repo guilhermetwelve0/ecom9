@@ -135,10 +135,10 @@ $productFilters = ProductsFilter::productFilters();
                             <span style="color:red;">Out of Stock</span>
                             @endif
                         </div>
-                        @if($totalStock > 0)
+                        @if($availableStock > 0)
                         <div class="left">
                             <span>Only:</span>
-                            <span>{{$totalStock}} left</span>
+                            <span>{{$availableStock}} left</span>
                         </div>
                         @endif
                     </div>

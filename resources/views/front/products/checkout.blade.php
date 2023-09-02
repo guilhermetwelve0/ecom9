@@ -112,9 +112,11 @@ use Illuminate\Support\Facades\Session; ?>
                                             </td>
                                         </tr>
                                         </tr>
+                                        @php
+                                        $totalDiscount = 0;
+                                        @endphp
                                         <tr>
                                             @php
-                                            $totalDiscount = 0;
                                             @endphp
                                             @foreach ($getCartItems as $item)
                                             <?php
@@ -123,6 +125,7 @@ use Illuminate\Support\Facades\Session; ?>
                                             $totalDiscount += $productTotalDiscount;
                                             ?>
                                             @endforeach
+
                                             <td>
                                                 <h6 class="order-h6">Products Discount</h6>
                                             </td>

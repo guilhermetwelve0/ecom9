@@ -86,9 +86,6 @@ class UserController extends Controller
                 //     }
                 //     return response()->json(['type' => 'success','url' => $redirectTo]);
                 // }
-
-
-
             } else {
                 return response()->json(['type' => 'error', 'errors' => $validator->messages()]);
             }

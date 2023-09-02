@@ -199,7 +199,10 @@ class ProductsController extends Controller
 
 
         $totalStock = ProductsAttribute::where('product_id', $id)->sum('stock');
-        return view('front.products.detail')->with(compact('productDetails', 'categoryDetails', 'totalStock', 'similarProducts', 'recentlyViewedProducts'));
+        $quantitySold = OrdersProduct::where('product_id', $id)->sum('product_qty');
+        $availableStock = $totalStock - $quantitySold;
+
+        return view('front.products.detail')->with(compact('productDetails', 'availableStock', 'categoryDetails', 'totalStock', 'similarProducts', 'recentlyViewedProducts'));
     }
 
     public function getProductPrice(Request $request)
@@ -508,19 +511,23 @@ class ProductsController extends Controller
             //Fetch Order Total Price
             //Calculate Grand total
             $total_price = 0;
+            $totalDiscount = 0; // Inicialize o totalDiscount aqui
             foreach ($getCartItems as $item) {
                 $getDiscountAttributePrice = Product::getDiscountAttributePrice($item['product_id'], $item['size']);
-                $total_price = $total_price + ($getDiscountAttributePrice['final_price'] * $item['quantity']);
+                $itemTotal = $getDiscountAttributePrice['final_price'] * $item['quantity'];
+                $total_price += $itemTotal;
+                // Calcule o desconto do produto e adicione ao totalDiscount
                 $productTotalDiscount = ($getDiscountAttributePrice['product_price'] - $getDiscountAttributePrice['final_price']) * $item['quantity'];
                 $totalDiscount += $productTotalDiscount;
             }
+
             //Calculate Shipping Charges
             $shipping_charges = 0;
             //Calculate Grand Total
-            $grand_total = $total_price + $shipping_charges - Session::get('couponAmount');
-            $getDiscountAttributePrice = Product::getDiscountAttributePrice($item['product_id'], $item['size']);
-            $productTotalDiscount = ($getDiscountAttributePrice['product_price'] - $getDiscountAttributePrice['final_price']) * $item['quantity'];
-            $totalDiscount += $productTotalDiscount;
+             $grand_total = $total_price + $shipping_charges - Session::get('couponAmount');
+            // $getDiscountAttributePrice = Product::getDiscountAttributePrice($item['product_id'], $item['size']);
+            // $productTotalDiscount = ($getDiscountAttributePrice['product_price'] - $getDiscountAttributePrice['final_price']) * $item['quantity'];
+            // $totalDiscount += $productTotalDiscount;
 
 
 

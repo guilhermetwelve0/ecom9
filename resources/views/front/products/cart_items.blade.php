@@ -107,24 +107,28 @@ use App\Models\Product; ?>
                     </td>
                 </tr>
                 <tr>
-                <tr>
                     @php
                     $totalDiscount = 0;
                     @endphp
-                    @foreach ($getCartItems as $item)
+                <tr>
                     @php
+                    @endphp
+                    @foreach ($getCartItems as $item)
+                    <?php
                     $getDiscountAttributePrice = Product::getDiscountAttributePrice($item['product_id'], $item['size']);
                     $productTotalDiscount = ($getDiscountAttributePrice['product_price'] - $getDiscountAttributePrice['final_price']) * $item['quantity'];
                     $totalDiscount += $productTotalDiscount;
-                    @endphp
+                    ?>
                     @endforeach
+
                     <td>
-                        <h3 class="calc-h3 u-s-m-b-0">Products Discount</h3>
+                        <h6 class="order-h6">Products Discount</h6>
                     </td>
                     <td>
-                        <span class="calc-text">Rs.{{ number_format($totalDiscount) }}</span>
+                        <h6 class="order-h6">Rs.{{ number_format($totalDiscount) }}</h6>
                     </td>
                 </tr>
+
                 <tr>
                     <td>
                         <h3 class="calc-h3 u-s-m-b-0">Coupon Discount</h3>
