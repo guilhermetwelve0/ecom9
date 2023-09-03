@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class OrdersLog extends Model
 {
     use HasFactory;
+    public function orders_products()
+    {
+        return $this->hasMany('App\Models\OrdersProduct', 'order_id','ordem_item_id');
+    }
 }

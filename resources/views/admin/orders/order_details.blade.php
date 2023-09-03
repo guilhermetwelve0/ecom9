@@ -209,9 +209,12 @@ use App\Models\Product; ?>
                             <button type="submit">Update</button>
                         </form>
                         <br>
-                        @foreach($orderLog as $log)
+                        @foreach($orderLog as $key => $log)
                         <strong>{{$log['order_status']}}</strong>
                         @if($log['order_status']=="Shipped")
+                        @if(isset($log['orders_products'][$key]['product_code']))
+                        - for item {{$log['orders_products'][$key]['product_code']}}
+                        @endif
                         @if(!empty($orderDetails['courier_name']))
                         <br><span>Courier Name: {{$orderDetails['courier_name']}}</span>
                         @endif
@@ -264,12 +267,14 @@ use App\Models\Product; ?>
                                 <td>
                                     <form action="{{url('admin/update-order-item-status')}}" method="post">@csrf
                                         <input type="hidden" name="order_item_id" value="{{$product['id']}}">
-                                        <select name="order_item_status" required="">
+                                        <select name="order_item_status" id="order_item_status" required="">
                                             <option value="">Select</option>
                                             @foreach($orderItemStatuses as $status)
                                             <option value="{{$status['name']}}" @if(!empty($product['item_status']) && $product['item_status']==$status['name']) selected="" @endif>{{$status['name']}}</option>
                                             @endforeach
                                         </select>
+                                        <input style="width:110px;" type="text" name="item_courier_name" id="item_courier_name" placeholder="Courier Name" @if(!empty($product['courier_name'])) value="{{$product['courier_name']}}" @endif>
+                                        <input style="width:110px;" type="text" name="item_tracking_number" id="item_tracking_number" placeholder="Tracking Number" @if(!empty($product['tracking_number'])) value="{{$product['tracking_number']}}" @endif>
                                         <button type="submit">Update</button>
                                     </form>
                                 </td>

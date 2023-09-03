@@ -57,7 +57,8 @@ class OrderController extends Controller
         $userDetails = User::where('id',$orderDetails['user_id'])->first()->toArray();
         $orderStatuses = OrderStatus::where('status',1)->get()->toArray();
         $orderItemStatuses = OrderItemStatus::where('status',1)->get()->toArray();
-        $orderLog = OrdersLog::where('order_id',$id)->orderBy('id','Desc')->get()->toArray();
+        $orderLog = OrdersLog::with('orders_products')->where('order_id',$id)->orderBy('id','Desc')->get()->toArray();
+        // dd($orderLog);
         return view('admin.orders.order_details')->with(compact('orderDetails','userDetails','orderStatuses', 'orderItemStatuses','orderLog'));
     }
     public function updateOrderStatus(Request $request){
@@ -103,7 +104,18 @@ class OrderController extends Controller
             $data = $request->all();
             //Update Order Item Status
             OrdersProduct::where('id', $data['order_item_id'])->update(['item_status' => $data['order_item_status']]);
+            //Update Courier Name & Tracking Number
+            if (!empty($data['item_courier_name']) && !empty($data['item_tracking_number'])) {
+                OrdersProduct::where('id', $data['order_item_id'])->update(['courier_name' => $data['item_courier_name'], 'tracking_number' => $data['item_tracking_number']]);
+            }
             $getOrderId = OrdersProduct::select('order_id')->where('id',$data['order_item_id'])->first()->toArray();
+
+            $log = new OrdersLog;
+            $log->order_id = $getOrderId['order_id'];
+            $log->order_item_id = $data['order_item_id'];
+            $log->order_status = $data['order_item_status'];
+            $log->save();
+
             //Get Delivery Details
             $deliveryDetails = Order::select('mobile', 'email', 'name')->where('id', $getOrderId['order_id'])->first()->toArray();
 
