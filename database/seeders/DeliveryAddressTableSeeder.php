@@ -17,7 +17,7 @@ class DeliveryAddressTableSeeder extends Seeder
     {
         $deliveryRecords = [
             ['id' => 1, 'user_id' => 1, 'name' => 'Amit Gupta', 'address' => '123-a', 'city' => 'New Delhi', 'state' => 'Delhi', 'country' => 'India', 'pincode' => '10001', 'mobile' => '9800000000', 'status' => 1],
-            ['id' => 2, 'user_id' => 1, 'name' => 'Amit Gupta', 'address' => '123-a', 'city' => 'Ludhiana', 'state' => 'Punjab', 'country' => 'India', 'pincode' => '141001', 'mobile' => '9700000000', 'status' => 1],
+            ['id' => 2, 'user_id' => 2, 'name' => 'Amit Gupta', 'address' => '123-a', 'city' => 'Ludhiana', 'state' => 'Punjab', 'country' => 'India', 'pincode' => '141001', 'mobile' => '9700000000', 'status' => 1],
         ];
         DeliveryAddress::insert($deliveryRecords);
     }

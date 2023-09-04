@@ -214,12 +214,19 @@ use App\Models\Product; ?>
                         @if($log['order_status']=="Shipped")
                         @if(isset($log['orders_products'][$key]['product_code']))
                         - for item {{$log['orders_products'][$key]['product_code']}}
+                        @if(!empty($log['orders_products'][$key]['courier_name']))
+                        <br><span>Courier Name: {{$log['orders_products'][$key]['courier_name']}}</span>
                         @endif
+                        @if(!empty($log['orders_products'][$key]['tracking_number']))
+                        <br><span>Tracking Number: {{$log['orders_products'][$key]['tracking_number']}}</span>
+                        @endif
+                        @else
                         @if(!empty($orderDetails['courier_name']))
                         <br><span>Courier Name: {{$orderDetails['courier_name']}}</span>
                         @endif
                         @if(!empty($orderDetails['tracking_number']))
                         <br><span>Tracking Number: {{$orderDetails['tracking_number']}}</span>
+                        @endif
                         @endif
                         @endif
                         <br>

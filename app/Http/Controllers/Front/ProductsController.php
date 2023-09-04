@@ -527,7 +527,7 @@ class ProductsController extends Controller
              $grand_total = $total_price + $shipping_charges - Session::get('couponAmount');
             // $getDiscountAttributePrice = Product::getDiscountAttributePrice($item['product_id'], $item['size']);
             // $productTotalDiscount = ($getDiscountAttributePrice['product_price'] - $getDiscountAttributePrice['final_price']) * $item['quantity'];
-            // $totalDiscount += $productTotalDiscount;
+            //  $totalDiscount += $productTotalDiscount;
 
 
 
